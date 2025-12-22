@@ -1,4 +1,7 @@
-/* You can add global styles to this file, and also import other style files */
+@import "@angular/material/prebuilt-themes/purple-green.css"; /* Tema oscuro nativo */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  @apply bg-slate-900 text-slate-50; /* Fondo muy oscuro para toda la app */
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
