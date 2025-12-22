@@ -1,0 +1,15 @@
+export * from './auth.service';
+import { AuthService } from './auth.service';
+export * from './catalog.service';
+import { CatalogService } from './catalog.service';
+export * from './externalCatalogs.service';
+import { ExternalCatalogsService } from './externalCatalogs.service';
+export * from './feature.service';
+import { FeatureService } from './feature.service';
+export * from './project.service';
+import { ProjectService } from './project.service';
+export * from './security.service';
+import { SecurityService } from './security.service';
+export * from './user.service';
+import { UserService } from './user.service';
+export const APIS = [AuthService, CatalogService, ExternalCatalogsService, FeatureService, ProjectService, SecurityService, UserService];
