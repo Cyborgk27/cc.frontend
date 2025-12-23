@@ -1,7 +1,15 @@
-@import "@angular/material/prebuilt-themes/purple-green.css"; /* Tema oscuro nativo */
+/* src/styles.css */
+@import "tailwindcss"; /* Esto carga todo el motor de Tailwind v4 */
 
-body {
-  @apply bg-slate-900 text-slate-50; /* Fondo muy oscuro para toda la app */
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+/* Importación de Angular Material */
+@import "@angular/material/prebuilt-themes/purple-green.css";
+
+/* Estilos globales para el modo oscuro */
+@layer base {
+  body {
+    @apply bg-slate-950 text-slate-50;
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+  }
 }
+

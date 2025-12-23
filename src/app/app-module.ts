@@ -5,19 +5,21 @@ import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 import { ApiModule, Configuration } from './core/api';
 import { provideHttpClient } from '@angular/common/http';
+import { SharedModule } from './shared/shared-module';
 
 @NgModule({
   declarations: [
-    App
+    App,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ApiModule.forRoot(() => {
       return new Configuration({
-        basePath: 'https://respectful-unity-production.up.railway.app/',
+        basePath: 'https://respectful-unity-production.up.railway.app',
       });
-    })
+    }),
+    SharedModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),

@@ -1,0 +1,51 @@
+<nav
+    class="w-full h-16 px-6 flex items-center justify-between bg-slate-900/50 backdrop-blur-md border-b border-slate-800">
+
+    <div class="flex items-center gap-4">
+        <button mat-icon-button class="md:hidden text-slate-400">
+            <mat-icon>menu</mat-icon>
+        </button>
+        <h2 class="text-lg font-semibold text-white tracking-wide">
+            Panel de Control
+        </h2>
+    </div>
+
+    <div class="flex items-center gap-2">
+
+        <button mat-icon-button class="text-slate-400 hover:text-indigo-400 transition-colors">
+            <mat-icon>notifications</mat-icon>
+        </button>
+
+        <div class="h-8 w-[1px] bg-slate-800 mx-2"></div>
+
+        <button [matMenuTriggerFor]="userMenu"
+            class="flex items-center gap-3 pl-2 pr-1 py-1 rounded-full hover:bg-slate-800 transition-all border border-transparent hover:border-slate-700">
+            <div class="flex flex-col items-end hidden sm:flex">
+                <span class="text-sm font-medium text-slate-200">{{ userFullName() }}</span>
+                <span class="text-[10px] text-slate-500 font-bold uppercase tracking-tighter">Administrador</span>
+            </div>
+
+            <div
+                class="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-500/20">
+                {{ userFullName().substring(0,1) }}
+            </div>
+        </button>
+
+        <mat-menu #userMenu="matMenu" class="dark-menu">
+            <button mat-menu-item>
+                <mat-icon class="text-slate-400">person</mat-icon>
+                <span class="text-slate-200">Mi Perfil</span>
+            </button>
+            <button mat-menu-item>
+                <mat-icon class="text-slate-400">settings</mat-icon>
+                <span class="text-slate-200">Configuración</span>
+            </button>
+            <mat-divider class="border-slate-800"></mat-divider>
+            <button mat-menu-item (click)="logout()">
+                <mat-icon class="text-red-400">logout</mat-icon>
+                <span class="text-red-400">Cerrar Sesión</span>
+            </button>
+        </mat-menu>
+
+    </div>
+</nav>

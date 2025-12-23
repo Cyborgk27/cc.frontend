@@ -1,7 +1,28 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ListSecurity } from './pages/list-security/list-security';
+import { NewSecurity } from './pages/new-security/new-security';
+import { EditSecurity } from './pages/edit-security/edit-security';
 
-const routes: Routes = [];
+const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'list-security',
+    pathMatch: 'full'
+  },
+  {
+    path: 'list-security',
+    component: ListSecurity,
+  },
+  {
+    path: 'new-security',
+    component: NewSecurity,
+  },
+  {
+    path: 'edit-security/:id',
+    component: EditSecurity,
+  },
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

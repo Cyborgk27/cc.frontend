@@ -1,1 +1,35 @@
-<p>sign-in works!</p>
+<div class="min-h-screen flex items-center justify-center bg-slate-950 p-4">
+    <div class="w-full max-w-md bg-slate-900/50 backdrop-blur-xl border border-slate-800 p-8 rounded-2xl shadow-2xl">
+
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-extrabold text-white tracking-tight">CC <span class="text-indigo-500">API</span>
+            </h1>
+            <p class="text-slate-400 mt-2">Ingresa a tu panel de control</p>
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-6">
+            <mat-form-field appearance="fill" class="w-full dark-field">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" placeholder="correo@ejemplo.com">
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="w-full dark-field">
+                <mat-label>Password</mat-label>
+                <input matInput formControlName="password" type="password">
+            </mat-form-field>
+
+            <button mat-flat-button color="primary" class="w-full !py-6 !rounded-xl !text-lg !font-bold"
+                [disabled]="loginForm.invalid || isLoading()">
+                {{ isLoading() ? 'Autenticando...' : 'Entrar' }}
+            </button>
+        </form>
+
+        <div class="mt-8 text-center">
+            <p class="text-slate-500">
+                ¿No tienes cuenta?
+                <a routerLink="/auth/sign-up"
+                    class="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">Regístrate aquí</a>
+            </p>
+        </div>
+    </div>
+</div>
