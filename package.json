@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "generate:api": "openapi-generator-cli generate -i swagger.json -g typescript-angular -o src/app/core/api --additional-properties=providedInRoot=true,useSingleRequestParameter=true"
+    "generate:api": "openapi-generator-cli generate -i https://respectful-unity-production.up.railway.app/swagger/v1/swagger.json -g typescript-angular -o src/app/core/api --additional-properties=providedInRoot=true,useSingleRequestParameter=true"
   },
   "prettier": {
     "printWidth": 100,
