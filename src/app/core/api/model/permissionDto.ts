@@ -10,6 +10,7 @@
 
 
 export interface PermissionDto { 
+    id?: number | null;
     name?: string | null;
     showName?: string | null;
     featureId?: number;

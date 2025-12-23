@@ -10,6 +10,7 @@
 
 
 export interface FeatureDto { 
+    id?: number | null;
     name?: string | null;
     showName?: string | null;
     path?: string | null;

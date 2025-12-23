@@ -10,6 +10,7 @@
 
 
 export interface RoleDto { 
+    id?: string | null;
     name?: string | null;
     showName?: string | null;
     permissionIds?: Array<number> | null;
