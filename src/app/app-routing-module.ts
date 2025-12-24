@@ -27,7 +27,7 @@ const routes: Routes = [
       {
         path: 'projects',
         loadChildren: () => import('./features/projects/projects-module').then(m => m.ProjectsModule),
-        data: { permission: 'PROJECTS_READ' },
+        data: { permission: 'PROJECT_READ' },
         canActivate:[authGuard],
       },
       {
