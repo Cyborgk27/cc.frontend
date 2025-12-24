@@ -20,19 +20,27 @@ const routes: Routes = [
       },
       {
         path: 'catalogs',
-        loadChildren: () => import('./features/catalogs/catalogs-module').then(m => m.CatalogsModule)
+        loadChildren: () => import('./features/catalogs/catalogs-module').then(m => m.CatalogsModule),
+        data: { permission: 'CATALOGS_READ' },
+        canActivate:[authGuard],
       },
       {
         path: 'projects',
-        loadChildren: () => import('./features/projects/projects-module').then(m => m.ProjectsModule)
+        loadChildren: () => import('./features/projects/projects-module').then(m => m.ProjectsModule),
+        data: { permission: 'PROJECTS_READ' },
+        canActivate:[authGuard],
       },
       {
         path: 'security',
-        loadChildren: () => import('./features/security/security-module').then(m => m.SecurityModule)
+        loadChildren: () => import('./features/security/security-module').then(m => m.SecurityModule),
+        data: { permission: 'SECURITY_READ' },
+        canActivate:[authGuard],
       },
       {
         path: 'users',
-        loadChildren: () => import('./features/users/users-module').then(m => m.UsersModule)
+        loadChildren: () => import('./features/users/users-module').then(m => m.UsersModule),
+        data: { permission: 'USERS_READ' },
+        canActivate:[authGuard],
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]

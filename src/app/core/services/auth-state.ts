@@ -10,6 +10,11 @@ export class AuthState {
   public isAuthenticated = computed(() => !!this._session()?.token);
   public navigation = computed(() => this._session()?.navigation || []);
   public userFullName = computed(() => this._session()?.fullName || '');
+  public permissions = computed<string[]>(() => this._session()?.permissions || []);
+
+  hasPermission(permission: string): boolean {
+    return this.permissions().includes(permission);
+  }
 
   setSession(authData: any) {
     localStorage.setItem('session', JSON.stringify(authData));
