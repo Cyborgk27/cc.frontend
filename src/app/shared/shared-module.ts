@@ -10,13 +10,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { GenericTable } from './components/generic-table/generic-table';
 
 @NgModule({
   declarations: [
     Layout,
     Sidenav,
     Navbar,
-    Dashboard
+    Dashboard,
+    GenericTable
   ],
   imports: [
     CommonModule,
@@ -30,7 +32,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 ],
   exports: [
     Dashboard,
-    Layout
+    Layout,
+    GenericTable
   ]
 })
 export class SharedModule { }

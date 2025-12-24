@@ -9,6 +9,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { RoleForm } from './components/role-form/role-form';
+import { SharedModule } from "../../shared/shared-module";
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { RoleForm } from './components/role-form/role-form';
     ReactiveFormsModule,
     MatCheckboxModule,
     MatButtonModule,
-  ]
+    SharedModule
+]
 })
 export class SecurityModule { }
