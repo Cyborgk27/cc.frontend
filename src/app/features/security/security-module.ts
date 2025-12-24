@@ -5,17 +5,17 @@ import { SecurityRoutingModule } from './security-routing-module';
 import { ListSecurity } from './pages/list-security/list-security';
 import { NewSecurity } from './pages/new-security/new-security';
 import { EditSecurity } from './pages/edit-security/edit-security';
-import { RoleFormDialog } from './components/modals/role-form-dialog/role-form-dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
+import { RoleForm } from './components/role-form/role-form';
 
 @NgModule({
   declarations: [
     ListSecurity,
     NewSecurity,
     EditSecurity,
-    RoleFormDialog
+    RoleForm
   ],
   imports: [
     CommonModule,

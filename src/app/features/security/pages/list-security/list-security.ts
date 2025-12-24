@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { SecurityFacade } from '../../../../core/services/security-facade';
 import { RoleDto } from '../../../../core/api';
-import { RoleFormDialog } from '../../components/modals/role-form-dialog/role-form-dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-list-security',
@@ -13,19 +13,17 @@ import { MatDialog } from '@angular/material/dialog';
 export class ListSecurity {
   private dialog = inject(MatDialog);
   public security = inject(SecurityFacade);
-
-  openRoleModal(role?: RoleDto) {
-    const dialogRef = this.dialog.open(RoleFormDialog, {
-      // width: '800px',
-      disableClose: true,
-      data: { role } // Si role es undefined, el modal sabe que es "Crear"
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        // Si el modal devolvió true, refrescamos la lista
-        this.security.fetchAll(); 
-      }
-    });
+  private router = inject(Router)
+  ngOnInit() {
+    this.security.fetchAll()
+  }
+  goToRoleForm(role?: RoleDto) {
+    if (role && role.id) {
+      // Navegamos a la página de edición pasando el ID
+      this.router.navigate(['/security/edit-security', role.id]);
+    } else {
+      // Navegamos a la página de creación
+      this.router.navigate(['/security/new-security']);
+    }
   }
 }
