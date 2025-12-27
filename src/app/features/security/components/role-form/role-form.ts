@@ -1,25 +1,27 @@
-import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, EventEmitter, Input, OnInit, Output, computed, inject, signal } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { SecurityFacade } from '../../../../core/services/security-facade';
-import { RoleDto } from '../../../../core/api';
+import { FeatureDto, RoleDto } from '../../../../core/api';
 
 @Component({
   selector: 'app-role-form',
-  standalone: false,
   templateUrl: './role-form.html',
-  styleUrl: './role-form.css',
+  standalone: false,
+  styleUrls: ['./role-form.css']
 })
-export class RoleForm {
+export class RoleForm implements OnInit {
   private fb = inject(FormBuilder);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
   public security = inject(SecurityFacade);
 
-  public selectedPermissionIds = signal<number[]>([]);
-  public isEdit = signal(false);
+  @Input() initialData?: RoleDto; // Para edición
+  @Output() onSave = new EventEmitter<RoleDto>();
 
-  form = this.fb.group({
+  // Señales para el Builder
+  public selectedFeatures = signal<FeatureDto[]>([]);
+  public selectedPermissionIds = signal<number[]>([]);
+
+  form: FormGroup = this.fb.group({
     id: [null],
     name: ['', [Validators.required]],
     showName: ['', [Validators.required]]
@@ -27,20 +29,35 @@ export class RoleForm {
 
   ngOnInit() {
     this.security.fetchAll();
-    const id = this.route.snapshot.paramMap.get('id');
-
-    if (id) {
-      this.isEdit.set(true);
-      this.form.get('name')?.disable(); // Regla: No editar el código técnico
+    
+    if (this.initialData) {
+      this.form.patchValue(this.initialData);
+      this.selectedPermissionIds.set(this.initialData.permissionIds ?? []);
       
-      this.security.getRoleById(id).subscribe(res => {
-        if (res.isSuccess && res.data) {
-          this.form.patchValue(res.data);
-          // Sincronizamos los IDs de los permisos (Recuerda: r.id y p.featureId)
-          this.selectedPermissionIds.set(res.data.permissionIds || []);
-        }
-      });
+      // Al editar, precargamos las features que ya tienen permisos seleccionados
+      const featureIdsWithPerms = new Set(
+        this.security.permissions()
+          .filter(p => this.initialData?.permissionIds?.includes(p.id!))
+          .map(p => p.featureId)
+      );
+      
+      const features = this.security.features().filter(f => featureIdsWithPerms.has(f.id!));
+      this.selectedFeatures.set(features);
     }
+  }
+
+  // --- Lógica Drag & Drop ---
+  onDrop(event: CdkDragDrop<FeatureDto[]>) {
+    const feature = event.item.data as FeatureDto;
+    const current = this.selectedFeatures();
+    
+    if (!current.find(f => f.id === feature.id)) {
+      this.selectedFeatures.set([...current, feature]);
+    }
+  }
+
+  getPermissionsByFeature(featureId: number) {
+    return this.security.permissions().filter(p => p.featureId === featureId);
   }
 
   togglePermission(id: number) {
@@ -50,20 +67,27 @@ export class RoleForm {
     );
   }
 
-  save() {
+  removeFeature(id: number) {
+    this.selectedFeatures.set(this.selectedFeatures().filter(f => f.id !== id));
+    // Opcional: limpiar permisos de esa feature
+    const perms = this.getPermissionsByFeature(id).map(p => p.id);
+    this.selectedPermissionIds.set(this.selectedPermissionIds().filter(pId => !perms.includes(pId)));
+  }
+
+  submit() {
     if (this.form.invalid) return;
+    const role: RoleDto = {
+      ...this.form.getRawValue(),
+      permissionIds: this.selectedPermissionIds()
+    };
+    this.onSave.emit(role);
+  }
+
+  public availableFeatures = computed(() => {
+    const all = this.security.features();
+    const selected = this.selectedFeatures();
+    const selectedIds = selected.map(s => s.id);
     
-    const payload = { 
-      ...this.form.getRawValue(), 
-      permissionIds: this.selectedPermissionIds() 
-    } as RoleDto;
-
-    this.security.saveRole(payload).subscribe(() => {
-      this.router.navigate(['/security']);
-    });
-  }
-
-  goToList() {
-    this.router.navigate(['/security'])
-  }
+    return all.filter(f => !selectedIds.includes(f.id));
+  });
 }

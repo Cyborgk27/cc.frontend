@@ -10,13 +10,14 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { RoleForm } from './components/role-form/role-form';
 import { SharedModule } from "../../shared/shared-module";
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
     ListSecurity,
     NewSecurity,
     EditSecurity,
-    RoleForm
+    RoleForm,
   ],
   imports: [
     CommonModule,
@@ -24,7 +25,8 @@ import { SharedModule } from "../../shared/shared-module";
     ReactiveFormsModule,
     MatCheckboxModule,
     MatButtonModule,
-    SharedModule
-]
+    SharedModule,
+    DragDropModule,
+  ]
 })
 export class SecurityModule { }

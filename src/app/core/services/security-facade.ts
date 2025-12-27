@@ -7,7 +7,7 @@ import { finalize } from 'rxjs';
 })
 export class SecurityFacade {
   private _api = inject(SecurityService);
-  
+
   private _roles = signal<RoleDto[]>([]);
   private _features = signal<FeatureDto[]>([]);
   private _permissions = signal<PermissionDto[]>([]);
@@ -18,6 +18,9 @@ export class SecurityFacade {
   public features = this._features.asReadonly();
   public permissions = this._permissions.asReadonly();
   public isLoading = this._loading.asReadonly();
+
+  private _selectedFeaturesForNewRole = signal<FeatureDto[]>([]);
+  public selectedFeatures = this._selectedFeaturesForNewRole.asReadonly();
 
   // --- LÓGICA COMPUTADA ---
   // Estructura jerárquica para mostrar en el front: Módulo -> Sus Permisos
@@ -36,7 +39,6 @@ export class SecurityFacade {
   /** Carga masiva de catálogos */
   fetchAll() {
     this._loading.set(true);
-    
     // Podríamos usar forkJoin, pero para Signals suele ser más limpio suscriptores separados
     // o una carga secuencial para no saturar el estado
     this._api.apiSecurityRoleAllGet().subscribe(res => {
@@ -64,7 +66,7 @@ export class SecurityFacade {
   saveRole(role: RoleDto) {
     this._loading.set(true);
     const params: ApiSecurityRoleSavePostRequestParams = { roleDto: role };
-    
+
     return this._api.apiSecurityRoleSavePost(params).pipe(
       finalize(() => {
         this._loading.set(false);
@@ -88,4 +90,21 @@ export class SecurityFacade {
       finalize(() => this._loading.set(false))
     );
   }
+
+  addFeatureToBuilder(feature: FeatureDto) {
+  const current = this._selectedFeaturesForNewRole();
+  if (!current.find(f => f.id === feature.id)) {
+    this._selectedFeaturesForNewRole.set([...current, feature]);
+  }
+}
+
+removeFeatureFromBuilder(featureId: number) {
+  this._selectedFeaturesForNewRole.set(
+    this._selectedFeaturesForNewRole().filter(f => f.id !== featureId)
+  );
+}
+
+resetBuilder() {
+  this._selectedFeaturesForNewRole.set([]);
+}
 }

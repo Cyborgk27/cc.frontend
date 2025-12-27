@@ -1,1 +1,8 @@
-<app-role-form/>
+<div class="p-8 bg-transparent min-h-screen">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-white tracking-tight">Crear Nuevo Rol</h1>
+        <p class="text-slate-400 mt-1">Configura un perfil desde cero arrastrando módulos y asignando permisos.</p>
+    </div>
+
+    <app-role-form (onSave)="handleCreate($event)"></app-role-form>
+</div>
