@@ -57,7 +57,7 @@ export class ListCatalog {
   // Estado de la paginación y filtros
   public filters = signal<ApiCatalogsGetRequestParams>({
     page: 1,
-    size: 10,
+    size: 5,
     name: ''
   });
 

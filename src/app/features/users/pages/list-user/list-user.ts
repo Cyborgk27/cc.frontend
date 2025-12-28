@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { TableAction } from '../../../../shared/interfaces/table-action.interface';
 import { Alert } from '../../../../core/services/ui/alert';
-import { Security } from '../../../../core/services/security'; // Debes tener uno similar al de Security
+import { UserFacade } from '../../../../core/services/user-facade'; // Debes tener uno similar al de Security
 import { Router } from '@angular/router';
 import { UserDto } from '../../../../core/api';
 @Component({
@@ -12,7 +12,7 @@ import { UserDto } from '../../../../core/api';
 })
 export class ListUser implements OnInit {
   // Inyectamos el Facade de usuarios (debes crearlo si no existe)
-  public securityUser = inject(Security);
+  public securityUser = inject(UserFacade);
   private router = inject(Router);
   private alert = inject(Alert);
   public columns = [
