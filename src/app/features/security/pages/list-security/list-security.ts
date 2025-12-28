@@ -20,7 +20,8 @@ export class ListSecurity implements OnInit {
   // 1. Configuración de Columnas (name y showName)
   public columns = [
     { key: 'name', label: 'Código Técnico' },
-    { key: 'showName', label: 'Nombre Visual' }
+    { key: 'showName', label: 'Nombre Visual' },
+    { key: 'description', label: 'Descripción' }
   ];
 
   // 2. Configuración de Acciones con Permisos y Tooltips
