@@ -3,6 +3,9 @@ import { finalize } from 'rxjs';
 // Importamos el servicio de la API y los DTOs (Asegúrate de que los nombres coincidan en tu carpeta ../api)
 import { UserService, UserDto } from '../api';
 
+@Injectable({
+  providedIn: 'root', // <--- ESTA LÍNEA ES VITAL
+})
 export class UserFacade {
     // 1. Inyectamos el servicio generado por Swagger/OpenAPI para Usuarios
     private _api = inject(UserService);
