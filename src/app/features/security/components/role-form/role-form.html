@@ -13,6 +13,12 @@
                 class="w-full bg-slate-900 border border-slate-700 text-white p-3 rounded-xl focus:border-indigo-500 outline-none transition-all"
                 placeholder="Ej: Administrador de Catálogos">
         </div>
+        <div class="space-y-1 md:col-span-2">
+        <label class="text-xs font-bold text-indigo-400 uppercase tracking-wider ml-1">Descripción del Rol</label>
+        <textarea formControlName="description" rows="3"
+            class="w-full bg-slate-900 border border-slate-700 text-white p-3 rounded-xl focus:border-indigo-500 outline-none transition-all resize-none"
+            placeholder="Describe brevemente las responsabilidades de este perfil..."></textarea>
+    </div>
     </form>
 
     <div class="grid grid-cols-12 gap-6" cdkDropListGroup>
