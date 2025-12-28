@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ListSecurity } from './pages/list-security/list-security';
 import { NewSecurity } from './pages/new-security/new-security';
 import { EditSecurity } from './pages/edit-security/edit-security';
+import { FeatureForm } from './components/feature-form/feature-form';
 
 const routes: Routes = [
   {
@@ -21,6 +22,14 @@ const routes: Routes = [
   {
     path: 'edit-security/:id',
     component: EditSecurity,
+  },
+  {
+    path: 'new-feature',
+    component: FeatureForm, // Asegúrate de importar este componente
+  },
+  {
+    path: 'edit-feature/:id',
+    component: FeatureForm,
   },
 ];
 

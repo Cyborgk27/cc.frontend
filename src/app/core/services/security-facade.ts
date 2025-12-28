@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { ApiSecurityRoleIdAssignPermissionsPutRequestParams, ApiSecurityRoleSavePostRequestParams, FeatureDto, PermissionDto, RoleDto, SecurityService } from '../api';
-import { finalize } from 'rxjs';
+import { ApiSecurityFeatureSavePostRequestParams, ApiSecurityPermissionSavePostRequestParams, ApiSecurityRoleIdAssignPermissionsPutRequestParams, ApiSecurityRoleSavePostRequestParams, FeatureDto, PermissionDto, RoleDto, SecurityService } from '../api';
+import { finalize, forkJoin, of, switchMap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -92,19 +92,55 @@ export class SecurityFacade {
   }
 
   addFeatureToBuilder(feature: FeatureDto) {
-  const current = this._selectedFeaturesForNewRole();
-  if (!current.find(f => f.id === feature.id)) {
-    this._selectedFeaturesForNewRole.set([...current, feature]);
+    const current = this._selectedFeaturesForNewRole();
+    if (!current.find(f => f.id === feature.id)) {
+      this._selectedFeaturesForNewRole.set([...current, feature]);
+    }
   }
-}
 
-removeFeatureFromBuilder(featureId: number) {
-  this._selectedFeaturesForNewRole.set(
-    this._selectedFeaturesForNewRole().filter(f => f.id !== featureId)
-  );
-}
+  removeFeatureFromBuilder(featureId: number) {
+    this._selectedFeaturesForNewRole.set(
+      this._selectedFeaturesForNewRole().filter(f => f.id !== featureId)
+    );
+  }
 
-resetBuilder() {
-  this._selectedFeaturesForNewRole.set([]);
-}
+  resetBuilder() {
+    this._selectedFeaturesForNewRole.set([]);
+  }
+
+  /**
+   * Crea una Feature y sus Permisos asociados
+   * @param feature Objeto FeatureDto
+   * @param permissions Array de PermissionDto
+   */
+  saveFeatureWithPermissions(feature: FeatureDto, permissions: PermissionDto[]) {
+    this._loading.set(true);
+
+    const featureParams: ApiSecurityFeatureSavePostRequestParams = { featureDto: feature };
+
+    return this._api.apiSecurityFeatureSavePost(featureParams).pipe(
+      switchMap((res) => {
+        // Si el backend no devuelve éxito, lanzamos error
+        if (!res.isSuccess) throw new Error(res.message || 'Error al crear Feature');
+
+        // Si no hay permisos que guardar, terminamos aquí
+        if (!permissions || permissions.length === 0) return of(res);
+
+        // Si hay permisos, creamos un array de observables para guardarlos todos en paralelo
+        const permissionRequests = permissions.map(perm => {
+          // Importante: Si tus permisos necesitan el ID de la feature recién creada, 
+          // deberías asignarlo aquí. Ejemplo: perm.featureId = res.data.id;
+          const permParams: ApiSecurityPermissionSavePostRequestParams = { permissionDto: perm };
+          return this._api.apiSecurityPermissionSavePost(permParams);
+        });
+
+        // forkJoin espera a que todas las peticiones de permisos terminen
+        return forkJoin(permissionRequests);
+      }),
+      finalize(() => {
+        this._loading.set(false);
+        this.fetchAll(); // Refrescamos las señales globales
+      })
+    );
+  }
 }

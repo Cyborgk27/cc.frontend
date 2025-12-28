@@ -11,6 +11,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { GenericTable } from './components/generic-table/generic-table';
+import { IconPicker } from './components/icon-picker/icon-picker';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { GenericTable } from './components/generic-table/generic-table';
     Sidenav,
     Navbar,
     Dashboard,
-    GenericTable
+    GenericTable,
+    IconPicker
   ],
   imports: [
     CommonModule,
@@ -33,7 +35,8 @@ import { GenericTable } from './components/generic-table/generic-table';
   exports: [
     Dashboard,
     Layout,
-    GenericTable
+    GenericTable,
+    IconPicker
   ]
 })
 export class SharedModule { }

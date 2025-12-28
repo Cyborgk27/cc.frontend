@@ -11,6 +11,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { RoleForm } from './components/role-form/role-form';
 import { SharedModule } from "../../shared/shared-module";
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { FeatureForm } from './components/feature-form/feature-form';
+import { ManageFeatures } from './pages/manage-features/manage-features';
 
 @NgModule({
   declarations: [
@@ -18,6 +20,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     NewSecurity,
     EditSecurity,
     RoleForm,
+    FeatureForm,
+    ManageFeatures,
   ],
   imports: [
     CommonModule,
