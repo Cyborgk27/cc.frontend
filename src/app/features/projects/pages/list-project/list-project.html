@@ -1,1 +1,24 @@
-<p>list-project works!</p>
+<p>list-user works!</p>
+wazaaaaaa
+
+<div class="p-8 bg-transparent min-h-screen">
+    <div class="flex justify-between items-end mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-white tracking-tight">Proyectos</h1>
+            <p class="text-slate-400 mt-1">Administración de proyectos del sistema.</p>
+        </div>
+    </div>
+
+    @if (securityProject.isLoading()) {
+    <div class="flex flex-col items-center justify-center py-20 bg-slate-800/30 rounded-3xl border border-slate-700/50">
+        <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-700 border-t-indigo-500 mb-4"></div>
+        <p class="text-slate-500">Sincronizando con el servidor...</p>
+    </div>
+    } @else {
+    <app-generic-table [data]="securityProject.projects()" [columns]="columns">
+    </app-generic-table>
+    }
+
+
+
+</div>

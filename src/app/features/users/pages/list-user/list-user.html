@@ -1,1 +1,30 @@
 <p>list-user works!</p>
+wazaaaaaa
+
+<div class="p-8 bg-transparent min-h-screen">
+    <div class="flex justify-between items-end mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-white tracking-tight">Usuarios</h1>
+            <p class="text-slate-400 mt-1">Administración de usuarios del sistema.</p>
+        </div>
+
+        <button (click)="goToUserForm()"
+            class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-indigo-600/20 transition-all active:scale-95">
+            <span class="material-icons">person_add</span>
+            Nuevo Usuario
+        </button>
+    </div>
+
+    @if (securityUser.isLoading()) {
+    <div class="flex flex-col items-center justify-center py-20 bg-slate-800/30 rounded-3xl border border-slate-700/50">
+        <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-700 border-t-indigo-500 mb-4"></div>
+        <p class="text-slate-500">Sincronizando con el servidor...</p>
+    </div>
+    } @else {
+    <app-generic-table [data]="securityUser.users()" [columns]="columns">
+    </app-generic-table>
+    }
+
+
+
+</div>
