@@ -1,0 +1,116 @@
+<div class="flex flex-col gap-6 animate-in fade-in duration-500">
+    <form [formGroup]="form"
+        class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-800/40 p-8 rounded-3xl border border-slate-700/50 shadow-2xl">
+
+        <div class="space-y-1">
+            <label class="text-xs font-bold text-indigo-400 uppercase tracking-wider ml-1">Identificador Técnico
+                (Name)</label>
+            <input formControlName="name"
+                class="w-full bg-slate-900 border border-slate-700 text-white p-3 rounded-xl focus:border-indigo-500 outline-none transition-all placeholder:text-slate-600"
+                placeholder="Ej: ESTADO_ACTIVO">
+        </div>
+
+        <div class="space-y-1">
+            <label class="text-xs font-bold text-indigo-400 uppercase tracking-wider ml-1">Nombre Visual (Show
+                Name)</label>
+            <input formControlName="showName"
+                class="w-full bg-slate-900 border border-slate-700 text-white p-3 rounded-xl focus:border-indigo-500 outline-none transition-all placeholder:text-slate-600"
+                placeholder="Ej: Activo">
+        </div>
+
+        <div class="space-y-1 relative">
+            <label class="text-xs font-bold text-indigo-400 uppercase tracking-wider ml-1">Catálogo Padre</label>
+            <div class="relative group">
+                <select formControlName="parentId"
+                    class="w-full bg-slate-900 border border-slate-700 text-white p-3 pr-10 rounded-xl focus:border-indigo-500 outline-none transition-all appearance-none cursor-pointer hover:border-slate-600">
+                    <option [ngValue]="null" class="bg-slate-900 text-slate-400 italic">-- Ninguno (Es Raíz) --</option>
+                    @for (cat of parentCatalogs; track cat.id) {
+                    <option [ngValue]="cat.id" class="bg-slate-900 text-white">{{ cat.showName }}</option>
+                    }
+                </select>
+                <span
+                    class="material-icons absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none group-focus-within:text-indigo-500 transition-colors">expand_more</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-indigo-400 uppercase tracking-wider ml-1">Abreviación</label>
+                <input formControlName="abbreviation"
+                    class="w-full bg-slate-900 border border-slate-700 text-white p-3 rounded-xl focus:border-indigo-500 outline-none transition-all"
+                    placeholder="Ej: ACT">
+            </div>
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-indigo-400 uppercase tracking-wider ml-1">Valor Técnico</label>
+                <input formControlName="value"
+                    class="w-full bg-slate-900 border border-slate-700 text-white p-3 rounded-xl focus:border-indigo-500 outline-none transition-all"
+                    placeholder="Ej: 1">
+            </div>
+        </div>
+
+        <div class="space-y-1 md:col-span-2">
+            <label class="text-xs font-bold text-indigo-400 uppercase tracking-wider ml-1">Descripción</label>
+            <textarea formControlName="description" rows="3"
+                class="w-full bg-slate-900 border border-slate-700 text-white p-3 rounded-xl focus:border-indigo-500 outline-none transition-all resize-none placeholder:text-slate-600"
+                placeholder="Escribe el propósito de este catálogo..."></textarea>
+        </div>
+
+        <div class="md:col-span-2 flex items-center gap-8 bg-slate-900/50 p-4 rounded-2xl border border-slate-700/30">
+
+            <label class="flex items-center gap-3 cursor-pointer group">
+                <input type="checkbox" formControlName="isActive" class="peer hidden">
+
+                <div
+                    class="w-12 h-6 bg-slate-700 rounded-full relative transition-all duration-300 peer-checked:bg-indigo-600">
+                    <div
+                        class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-all duration-300 transform peer-checked:translate-x-6">
+                    </div>
+                </div>
+
+                <span class="text-sm font-bold text-slate-400 group-hover:text-white transition-colors">
+                    Registro Activo
+                </span>
+            </label>
+
+            <label class="flex items-center gap-3 cursor-pointer group">
+                <input type="checkbox" formControlName="isParent" class="peer hidden">
+
+                <div
+                    class="w-12 h-6 bg-slate-700 rounded-full relative transition-all duration-300 peer-checked:bg-emerald-600">
+                    <div
+                        class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-all duration-300 transform peer-checked:translate-x-6">
+                    </div>
+                </div>
+
+                <span class="text-sm font-bold text-slate-400 group-hover:text-white transition-colors">
+                    ¿Es un Nodo Padre?
+                </span>
+            </label>
+        </div>
+
+        @if (initialData?.children && initialData!.children!.length > 0) {
+        <div class="md:col-span-2 mt-4 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+                <h3 class="text-sm font-bold text-indigo-400 uppercase tracking-widest flex items-center gap-2">
+                    <span class="material-icons text-lg">account_tree</span>
+                    Sub-Catálogos Dependientes
+                </h3>
+                <span class="text-xs text-slate-500 font-mono">{{ initialData?.children?.length }} registros</span>
+            </div>
+
+            <app-generic-table [data]="initialData!.children!" [columns]="childColumns" [pagination]="false"
+                [loading]="false">
+            </app-generic-table>
+        </div>
+        }
+    </form>
+
+    <div class="flex justify-end gap-3">
+        <button type="button" routerLink="/catalogs"
+            class="px-8 py-3 text-slate-400 hover:text-white transition-colors font-bold">Cancelar</button>
+        <button (click)="submit()" [disabled]="form.invalid"
+            class="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 text-white px-12 py-3 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20 active:scale-95">
+            Guardar Catálogo
+        </button>
+    </div>
+</div>

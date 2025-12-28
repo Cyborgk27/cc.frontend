@@ -24,7 +24,8 @@ export class RoleForm implements OnInit {
   form: FormGroup = this.fb.group({
     id: [null],
     name: ['', [Validators.required]],
-    showName: ['', [Validators.required]]
+    showName: ['', [Validators.required]],
+    description: ['', [Validators.required]]
   });
 
   ngOnInit() {
