@@ -7,10 +7,13 @@ import { ApiModule, Configuration } from './core/api';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { SharedModule } from './shared/shared-module';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { UserForm } from './features/users/pages/components/user-form/user-form';
+// import { UserForm } from './app/features/users/pages/components/user-form/user-form';
 
 @NgModule({
   declarations: [
     App,
+    // UserForm,
   ],
   imports: [
     BrowserModule,

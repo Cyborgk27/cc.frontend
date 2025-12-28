@@ -24,42 +24,28 @@ export class ListUser implements OnInit {
     { key: 'lastName', label: 'Apellido' }
   ];
 
-  public roleActions: TableAction[] = [
+  public userActions: TableAction[] = [
     {
       icon: 'edit',
-      tooltip: 'Editar Usuario',
+      tooltip: 'Editar Configuración',
       colorClass: 'text-indigo-400',
-      permission: 'USER_UPDATE',
+      permission: 'SECURITY_UPDATE', // Se oculta si no tiene el permiso
       callback: (user: UserDto) => this.goToUserForm(user)
     },
     {
-      icon: 'delete',
+      icon: 'delete_outline',
       tooltip: 'Eliminar Usuario',
       colorClass: 'text-rose-400',
-      permission: 'USER_DELETE',
+      permission: 'SECURITY_DELETE',
       callback: (user: UserDto) => this.deleteUser(user)
+    },
+    {
+      icon: 'visibility',
+      tooltip: 'Ver Detalles',
+      colorClass: 'text-slate-400',
+      permission: 'SECURITY_READ',
+      callback: (user: UserDto) => console.log('Viendo detalles de:', user)
     }
-    // {
-    //   icon: 'edit_note',
-    //   tooltip: 'Editar Configuración',
-    //   colorClass: 'text-indigo-400',
-    //   permission: 'SECURITY_UPDATE', // Se oculta si no tiene el permiso
-    //   callback: (role: UserDto) => this.goToRoleForm(role)
-    // },
-    // {
-    //   icon: 'delete_outline',
-    //   tooltip: 'Eliminar Rol',
-    //   colorClass: 'text-rose-400',
-    //   permission: 'SECURITY_DELETE',
-    //   callback: (role: UserDto) => this.deleteRole(role)
-    // },
-    // {
-    //   icon: 'visibility',
-    //   tooltip: 'Ver Detalles',
-    //   colorClass: 'text-slate-400',
-    //   permission: 'SECURITY_READ',
-    //   callback: (role: UserDto) => console.log('Viendo detalles de:', role.showName)
-    // }
   ];
 
   ngOnInit() {
@@ -69,7 +55,7 @@ export class ListUser implements OnInit {
 
   goToUserForm(user?: UserDto) {
     if (user && user.id) {
-      this.router.navigate(['/users/edit-security', user.id]);
+      this.router.navigate(['/users/edit-user', user.id]);
     } else {
       this.router.navigate(['/users/new-user']);
     }
@@ -82,13 +68,5 @@ export class ListUser implements OnInit {
       console.log('Eliminando:', user.id);
     }
   }
-
-  // deleteRole(role: UserDto) {
-  //   // Aquí podrías integrar un SweetAlert2 para confirmar
-  //   if (confirm(`¿Estás seguro de eliminar el rol ${role.showName}?`)) {
-  //     // this.security.deleteRole(role.id!).subscribe(...);
-  //     console.log('Eliminando id:', role.id);
-  //   }
-  // }
 
 }

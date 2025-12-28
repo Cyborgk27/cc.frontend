@@ -1,5 +1,4 @@
 <p>list-user works!</p>
-wazaaaaaa
 
 <div class="p-8 bg-transparent min-h-screen">
     <div class="flex justify-between items-end mb-8">
@@ -21,7 +20,7 @@ wazaaaaaa
         <p class="text-slate-500">Sincronizando con el servidor...</p>
     </div>
     } @else {
-    <app-generic-table [data]="securityUser.users()" [columns]="columns">
+    <app-generic-table [data]="securityUser.users()" [columns]="columns" [actions]="userActions">
     </app-generic-table>
     }
 
