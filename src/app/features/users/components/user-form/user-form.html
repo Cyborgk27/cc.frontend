@@ -1,0 +1,78 @@
+<div class="p-8 max-w-5xl mx-auto">
+    <form [formGroup]="form" (ngSubmit)="save()" class="space-y-6">
+        <div class="bg-slate-800/20 p-8 rounded-3xl border border-slate-700/30 backdrop-blur-sm shadow-2xl">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-indigo-400 uppercase tracking-widest ml-1">Username</label>
+                    <input formControlName="userName"
+                        class="w-full bg-slate-900 border border-slate-700 text-white p-3 rounded-xl focus:border-indigo-500 outline-none transition-all">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-indigo-400 uppercase tracking-widest ml-1">Email</label>
+                    <input type="email" formControlName="email"
+                        class="w-full bg-slate-900 border border-slate-700 text-white p-3 rounded-xl focus:border-indigo-500 outline-none transition-all">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-indigo-400 uppercase tracking-widest ml-1">Nombre</label>
+                    <input formControlName="firstName"
+                        class="w-full bg-slate-900 border border-slate-700 text-white p-3 rounded-xl focus:border-indigo-500 outline-none transition-all">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-indigo-400 uppercase tracking-widest ml-1">Apellido</label>
+                    <input formControlName="lastName"
+                        class="w-full bg-slate-900 border border-slate-700 text-white p-3 rounded-xl focus:border-indigo-500 outline-none transition-all">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-indigo-400 uppercase tracking-widest ml-1">
+                        Rol Asignado
+                    </label>
+
+                    <div class="relative">
+                        <select formControlName="roleId"
+                            class="w-full bg-slate-900 border border-slate-700 text-white p-3 rounded-xl focus:border-indigo-500 outline-none transition-all appearance-none cursor-pointer pr-10">
+
+                            <option [value]="null" disabled selected>Seleccione un perfil de acceso...</option>
+
+                            @for (role of securityFacade.roles(); track role.id) {
+                            <option [value]="role.id">
+                                {{ role.showName }}
+                            </option>
+                            }
+                        </select>
+
+                        <span
+                            class="material-icons absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
+                            expand_more
+                        </span>
+                    </div>
+
+                    @if (securityFacade.isLoading()) {
+                    <p class="text-[10px] text-indigo-400 animate-pulse ml-1">Cargando catálogo de roles...</p>
+                    }
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-indigo-400 uppercase tracking-widest ml-1">Contraseña</label>
+                    <input type="password" formControlName="password"
+                        [placeholder]="isEditMode ? 'Dejar en blanco para no cambiar' : '********'"
+                        class="w-full bg-slate-900 border border-slate-700 text-white p-3 rounded-xl focus:border-indigo-500 outline-none transition-all">
+                </div>
+
+            </div>
+        </div>
+
+        <div class="flex justify-end gap-4">
+            <button type="button" routerLink="/users" class="text-slate-400 font-bold px-6 py-3">Cancelar</button>
+            <button type="submit" [disabled]="form.invalid || userFacade.isLoading()"
+                class="bg-gradient-to-r from-indigo-600 to-violet-600 text-white px-10 py-3 rounded-2xl font-bold shadow-xl active:scale-95 disabled:opacity-50">
+                {{ isEditMode ? 'Actualizar' : 'Crear Usuario' }}
+            </button>
+        </div>
+    </form>
+</div>

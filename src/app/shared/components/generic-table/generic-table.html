@@ -8,7 +8,7 @@
                         {{ col.label }}
                     </th>
                     }
-                    
+
                     @if (actions && actions.length > 0) {
                     <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">
                         Acciones
@@ -17,66 +17,67 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-700/50 relative">
-                
-                @if (loading) {
-                    @for (i of [1,2,3,4,5]; track i) {
-                    <tr class="animate-pulse">
-                        @for (col of columns; track col.key) {
-                        <td class="px-6 py-5">
-                            <div class="h-2.5 bg-slate-700 rounded-full w-24"></div>
-                        </td>
-                        }
-                        @if (actions && actions.length > 0) {
-                        <td class="px-6 py-5 flex justify-end">
-                            <div class="h-8 w-8 bg-slate-700 rounded-lg"></div>
-                        </td>
-                        }
-                    </tr>
-                    }
-                } @else {
-                    @for (row of data; track row.id) {
-                    <tr class="hover:bg-slate-700/30 transition-colors group">
-                        @for (col of columns; track col.key) {
-                        <td class="px-6 py-4">
-                            @if (col.key === 'isActive') {
-                            <span [class]="row[col.key] ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'"
-                                class="text-[10px] uppercase font-black px-2 py-1 rounded-md border">
-                                {{ row[col.key] ? 'Activo' : 'Inactivo' }}
-                            </span>
-                            } @else {
-                            <span class="text-sm text-slate-300 {{ col.class }}">
-                                {{ row[col.key] }}
-                            </span>
-                            }
-                        </td>
-                        }
 
-                        @if (actions && actions.length > 0) {
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex justify-end gap-1">
-                                @for (action of actions; track action.tooltip) {
-                                    @if (!action.permission || auth.hasPermission(action.permission)) {
-                                    <button (click)="action.callback(row)" [matTooltip]="action.tooltip"
-                                        class="p-2 rounded-lg transition-all hover:bg-slate-700/50 {{ action.colorClass }}">
-                                        <span class="material-icons text-xl">{{ action.icon }}</span>
-                                    </button>
-                                    }
-                                }
-                            </div>
-                        </td>
-                        }
-                    </tr>
-                    } @empty {
-                    <tr>
-                        <td [attr.colspan]="actions.length > 0 ? columns.length + 1 : columns.length" 
-                            class="px-6 py-20 text-center">
-                            <div class="flex flex-col items-center opacity-20">
-                                <span class="material-icons text-4xl mb-2">inventory_2</span>
-                                <p class="italic">No hay registros disponibles</p>
-                            </div>
-                        </td>
-                    </tr>
+                @if (loading) {
+                @for (i of [1,2,3,4,5]; track i) {
+                <tr class="animate-pulse">
+                    @for (col of columns; track col.key) {
+                    <td class="px-6 py-5">
+                        <div class="h-2.5 bg-slate-700 rounded-full w-24"></div>
+                    </td>
                     }
+                    @if (actions && actions.length > 0) {
+                    <td class="px-6 py-5 flex justify-end">
+                        <div class="h-8 w-8 bg-slate-700 rounded-lg"></div>
+                    </td>
+                    }
+                </tr>
+                }
+                } @else {
+                @for (row of data; track row.id) {
+                <tr class="hover:bg-slate-700/30 transition-colors group">
+                    @for (col of columns; track col.key) {
+                    <td class="px-6 py-4">
+                        @if (col.key === 'isActive') {
+                        <span
+                            [class]="row[col.key] ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' :  'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'"
+                            class="text-[10px] uppercase font-black px-2 py-1 rounded-md border">
+                            {{ row[col.key] ? 'Inactivo' : 'Activo' }}
+                        </span>
+                        } @else {
+                        <span class="text-sm text-slate-300 {{ col.class }}">
+                            {{ row[col.key] }}
+                        </span>
+                        }
+                    </td>
+                    }
+
+                    @if (actions && actions.length > 0) {
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex justify-end gap-1">
+                            @for (action of actions; track action.tooltip) {
+                            @if (!action.permission || auth.hasPermission(action.permission)) {
+                            <button (click)="action.callback(row)" [matTooltip]="action.tooltip"
+                                class="p-2 rounded-lg transition-all hover:bg-slate-700/50 {{ action.colorClass }}">
+                                <span class="material-icons text-xl">{{ action.icon }}</span>
+                            </button>
+                            }
+                            }
+                        </div>
+                    </td>
+                    }
+                </tr>
+                } @empty {
+                <tr>
+                    <td [attr.colspan]="actions.length > 0 ? columns.length + 1 : columns.length"
+                        class="px-6 py-20 text-center">
+                        <div class="flex flex-col items-center opacity-20">
+                            <span class="material-icons text-4xl mb-2">inventory_2</span>
+                            <p class="italic">No hay registros disponibles</p>
+                        </div>
+                    </td>
+                </tr>
+                }
                 }
             </tbody>
         </table>
