@@ -33,7 +33,7 @@ export class ListCatalog {
       class: 'text-slate-500'
     },
     {
-      key: 'isActive',
+      key: 'isDeleted',
       label: 'Estado',
       type: 'boolean' // Ahora el compilador sabe que esto es "boolean" de TableColumn
     }

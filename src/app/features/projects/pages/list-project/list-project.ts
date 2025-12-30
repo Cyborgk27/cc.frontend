@@ -21,7 +21,7 @@ export class ListProject implements OnInit {
   public columns: TableColumn[] = [
     { key: 'showName', label: 'Proyecto' },
     { key: 'name', label: 'Código' },
-    { key: 'isActive', label: 'Estado', type: 'boolean' },
+    { key: 'isDeleted', label: 'Estado', type: 'boolean' },
     { key: 'description', label: 'Descripción' }
   ];
 
