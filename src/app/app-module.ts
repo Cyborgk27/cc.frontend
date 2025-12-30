@@ -7,6 +7,7 @@ import { ApiModule, Configuration } from './core/api';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { SharedModule } from './shared/shared-module';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { environment } from '../environments/environment.development';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,7 @@ import { authInterceptor } from './core/interceptors/auth.interceptor';
     AppRoutingModule,
     ApiModule.forRoot(() => {
       return new Configuration({
-        basePath: 'https://respectful-unity-production.up.railway.app',
+        basePath: environment.urlAddress,
       });
     }),
     SharedModule
