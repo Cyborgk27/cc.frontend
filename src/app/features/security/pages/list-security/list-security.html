@@ -18,38 +18,52 @@
         </div>
 
         <div class="flex items-center">
-            @if (activeTab() === 'roles') {
-                <button (click)="goToRoleForm()" 
-                    class="group flex items-center gap-3 bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-3 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20 active:scale-95">
-                    <span class="material-icons group-hover:rotate-12 transition-transform">add_moderator</span>
-                    Nuevo Rol
-                </button>
-            } @else {
-                <button (click)="goToFeatureForm()" 
-                    class="group flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-3 rounded-2xl font-bold transition-all shadow-lg shadow-emerald-900/20 active:scale-95">
-                    <span class="material-icons group-hover:rotate-12 transition-transform">extension</span>
-                    Nueva Funcionalidad
-                </button>
+            @if (auth.hasPermission(PERMS.SECURITY.CREATE)) {
+                
+                @if (activeTab() === 'roles') {
+                    <button (click)="goToRoleForm()" 
+                        class="group flex items-center gap-3 bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-3 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20 active:scale-95">
+                        <span class="material-icons group-hover:rotate-12 transition-transform">add_moderator</span>
+                        Nuevo Rol
+                    </button>
+                } @else {
+                    <button (click)="goToFeatureForm()" 
+                        class="group flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-3 rounded-2xl font-bold transition-all shadow-lg shadow-emerald-900/20 active:scale-95">
+                        <span class="material-icons group-hover:rotate-12 transition-transform">extension</span>
+                        Nueva Funcionalidad
+                    </button>
+                }
+
             }
         </div>
     </div>
 
     <div class="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        
         @if (security.isLoading()) {
             <div class="flex flex-col items-center justify-center py-20 bg-slate-800/30 rounded-3xl border border-slate-700/50">
                 <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-700 border-t-indigo-500 mb-4"></div>
-                <p class="text-slate-500">Sincronizando con el servidor...</p>
+                <p class="text-slate-500 font-medium">Sincronizando con el servidor...</p>
             </div>
         } @else {
             
-            @if (activeTab() === 'roles') {
-                <app-generic-table [data]="security.roles()" [columns]="roleColumns" [actions]="roleActions">
-                </app-generic-table>
-            } @else {
-                <app-generic-table [data]="security.features()" [columns]="featureColumns" [actions]="featureActions">
-                </app-generic-table>
-            }
-
+            <div class="bg-slate-800/20 rounded-3xl border border-slate-700/30 overflow-hidden backdrop-blur-md">
+                @if (activeTab() === 'roles') {
+                    <app-generic-table 
+                        [data]="security.roles()" 
+                        [columns]="roleColumns" 
+                        [actions]="roleActions"
+                        [loading]="security.isLoading()">
+                    </app-generic-table>
+                } @else {
+                    <app-generic-table 
+                        [data]="security.features()" 
+                        [columns]="featureColumns" 
+                        [actions]="featureActions"
+                        [loading]="security.isLoading()">
+                    </app-generic-table>
+                }
+            </div>
         }
     </div>
 </div>

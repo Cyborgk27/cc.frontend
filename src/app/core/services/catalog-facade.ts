@@ -18,10 +18,11 @@ export class CatalogFacade {
   // --- ESTADO ---
   private _catalogs = signal<CatalogDto[]>([]);
   private _loading = signal<boolean>(false);
-
+  
   // --- EXPOSICIÓN PÚBLICA ---
   public catalogs = this._catalogs.asReadonly();
   public isLoading = this._loading.asReadonly();
+  public totalRecords = signal<number>(0);
 
   /**
    * Obtiene la lista de catálogos con filtros opcionales
@@ -33,6 +34,7 @@ export class CatalogFacade {
         // Asumiendo que res tiene una propiedad 'data' con el array
         if (res.isSuccess) {
           this._catalogs.set(res.data);
+          this.totalRecords.set(res.total);
         }
       }),
       finalize(() => this._loading.set(false))
