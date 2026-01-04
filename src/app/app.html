@@ -1,1 +1,27 @@
-<router-outlet />
+@if (isAppLoading()) {
+<div class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0f172a]">
+    <div class="relative">
+        <div
+            class="h-24 w-24 animate-spin rounded-full border-4 border-indigo-500/10 border-t-indigo-500 shadow-[0_0_20px_rgba(79,70,229,0.3)]">
+        </div>
+
+        <span
+            class="material-icons absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-indigo-500 text-4xl">
+            shield
+        </span>
+    </div>
+
+    <div class="mt-8 text-center">
+        <p class="text-sm font-black tracking-[0.3em] text-slate-500 animate-pulse uppercase">
+            Sincronizando Entorno
+        </p>
+        <div class="mt-4 h-1 w-48 overflow-hidden rounded-full bg-slate-800">
+            <div class="h-full w-full origin-left animate-progress bg-indigo-500"></div>
+        </div>
+    </div>
+</div>
+}
+
+<main [class.opacity-0]="isAppLoading()" [class.scale-95]="isAppLoading()">
+    <router-outlet></router-outlet>
+</main>
