@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { TableAction } from '../../../../shared/interfaces/table-action.interface';
 import { TableColumn } from '../../../../shared/interfaces/table-column.interface';
 import { ProjectFacade } from '../../../../core/services/project-facade';
+import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
+import { AuthState } from '../../../../core/services/auth-state';
 
 @Component({
   selector: 'app-list-project',
@@ -13,8 +15,11 @@ import { ProjectFacade } from '../../../../core/services/project-facade';
 export class ListProject implements OnInit {
   private router = inject(Router);
   public projectFacade = inject(ProjectFacade);
+  public auth = inject(AuthState); // Inyectamos el estado de autenticación
 
-  // Control local de paginación para el componente genérico
+  // Exponemos las constantes al template
+  public readonly PERMS = PERMISSIONS;
+
   public currentPage = 1;
   public pageSize = 5;
 
@@ -30,7 +35,15 @@ export class ListProject implements OnInit {
       icon: 'edit',
       tooltip: 'Editar Proyecto',
       colorClass: 'text-indigo-400',
+      permission: PERMISSIONS.PROJECTS.UPDATE, // 'PROJECT_UPDATE'
       callback: (project: any) => this.goToProjectForm(project.id)
+    },
+    {
+      icon: 'delete',
+      tooltip: 'Eliminar Proyecto',
+      colorClass: 'text-rose-400',
+      permission: PERMISSIONS.PROJECTS.DELETE, // 'PROJECT_DELETE'
+      callback: (project: any) => this.deleteProject(project)
     }
   ];
 
@@ -38,27 +51,18 @@ export class ListProject implements OnInit {
     this.loadData();
   }
 
-  /**
-   * Centraliza la carga de datos aplicando el offset de página si es necesario
-   */
   loadData() {
     this.projectFacade.fetchAll({ 
-      page: this.currentPage, // Tu service parece usar base 1 o el facade lo gestiona
+      page: this.currentPage, 
       size: this.pageSize 
     });
   }
 
-  /**
-   * Método disparado por el (pageChange) de tu app-generic-table
-   */
   onPageChange(page: number) {
     this.currentPage = page;
     this.loadData();
   }
 
-  /**
-   * Navegación unificada para nuevo y editar
-   */
   goToProjectForm(id?: string) {
     if (id) {
       this.router.navigate(['/projects/edit-project', id]);
@@ -66,5 +70,10 @@ export class ListProject implements OnInit {
       this.projectFacade.clearSelection();
       this.router.navigate(['/projects/new-project']);
     }
+  }
+
+  deleteProject(project: any) {
+    // Aquí iría tu lógica de borrado
+    console.log('Eliminando:', project);
   }
 }

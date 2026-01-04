@@ -20,4 +20,8 @@ export class GenericTable {
   @Input() currentPage: number = 1;
   @Input() totalItems: number = 0; // Opcional, si el back devuelve el total
   @Output() pageChange = new EventEmitter<number>();
+
+  get totalColumns(): number {
+    return this.columns.length + (this.actions.length > 0 ? 1 : 0);
+  }
 }
