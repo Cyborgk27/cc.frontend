@@ -32,7 +32,7 @@ export class BreadcrumbService {
     }
 
     // Extraemos el nombre (usando tu propiedad 'breadcrumd')
-    const label = route.data['breadcrumd'];
+    const label = route.data['breadcrumb'];
 
     if (label) {
       // Evitamos duplicados (por ejemplo, si el padre y el hijo tienen el mismo nombre)

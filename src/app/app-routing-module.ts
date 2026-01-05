@@ -17,7 +17,7 @@ const routes: Routes = [
       {
         path: 'dashboard',
         data: {
-          breadcrumd: 'Dashboard'
+          breadcrumb: 'Dashboard'
         },
         component: Dashboard
       },
@@ -26,7 +26,7 @@ const routes: Routes = [
         loadChildren: () => import('./features/catalogs/catalogs-module').then(m => m.CatalogsModule),
         data: { 
           permission: 'CATALOGS_READ',
-          breadcrumd: 'Catálogos' 
+          breadcrumb: 'Catálogos' 
         },
         canActivate:[authGuard],
       },
@@ -35,7 +35,7 @@ const routes: Routes = [
         loadChildren: () => import('./features/projects/projects-module').then(m => m.ProjectsModule),
         data: { 
           permission: 'PROJECT_READ',
-          breadcrumd: 'Proyectos'
+          breadcrumb: 'Proyectos'
         },
         canActivate:[authGuard],
       },
@@ -44,7 +44,7 @@ const routes: Routes = [
         loadChildren: () => import('./features/security/security-module').then(m => m.SecurityModule),
         data: { 
           permission: 'SECURITY_READ',
-          breadcrumd: 'Seguridad' 
+          breadcrumb: 'Seguridad' 
         },
         canActivate:[authGuard],
       },
@@ -53,7 +53,7 @@ const routes: Routes = [
         loadChildren: () => import('./features/users/users-module').then(m => m.UsersModule),
         data: { 
           permission: 'USERS_READ',
-          breadcrumd: 'Usuarios' 
+          breadcrumb: 'Usuarios' 
         },
         canActivate:[authGuard],
       },
