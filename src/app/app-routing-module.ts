@@ -16,30 +16,45 @@ const routes: Routes = [
     children: [
       {
         path: 'dashboard',
+        data: {
+          breadcrumd: 'Dashboard'
+        },
         component: Dashboard
       },
       {
         path: 'catalogs',
         loadChildren: () => import('./features/catalogs/catalogs-module').then(m => m.CatalogsModule),
-        data: { permission: 'CATALOGS_READ' },
+        data: { 
+          permission: 'CATALOGS_READ',
+          breadcrumd: 'Catálogos' 
+        },
         canActivate:[authGuard],
       },
       {
         path: 'projects',
         loadChildren: () => import('./features/projects/projects-module').then(m => m.ProjectsModule),
-        data: { permission: 'PROJECT_READ' },
+        data: { 
+          permission: 'PROJECT_READ',
+          breadcrumd: 'Proyectos'
+        },
         canActivate:[authGuard],
       },
       {
         path: 'security',
         loadChildren: () => import('./features/security/security-module').then(m => m.SecurityModule),
-        data: { permission: 'SECURITY_READ' },
+        data: { 
+          permission: 'SECURITY_READ',
+          breadcrumd: 'Seguridad' 
+        },
         canActivate:[authGuard],
       },
       {
         path: 'users',
         loadChildren: () => import('./features/users/users-module').then(m => m.UsersModule),
-        data: { permission: 'USERS_READ' },
+        data: { 
+          permission: 'USERS_READ',
+          breadcrumd: 'Usuarios' 
+        },
         canActivate:[authGuard],
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }

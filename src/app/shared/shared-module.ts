@@ -12,6 +12,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { GenericTable } from './components/generic-table/generic-table';
 import { IconPicker } from './components/icon-picker/icon-picker';
+import { Breadcrumb } from './components/breadcrumb/breadcrumb';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { IconPicker } from './components/icon-picker/icon-picker';
     Navbar,
     Dashboard,
     GenericTable,
-    IconPicker
+    IconPicker,
+    Breadcrumb
   ],
   imports: [
     CommonModule,
