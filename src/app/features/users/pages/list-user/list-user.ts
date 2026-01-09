@@ -31,7 +31,7 @@ export class ListUser implements OnInit {
         type: 'text' 
     },
     { 
-        key: 'isActive', 
+        key: 'isDeleted', 
         label: 'Estado', 
         type: 'boolean' 
     }
