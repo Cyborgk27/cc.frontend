@@ -57,35 +57,38 @@
 
         <div class="md:col-span-2 flex items-center gap-8 bg-slate-900/50 p-4 rounded-2xl border border-slate-700/30">
 
-            <label class="flex items-center gap-3 cursor-pointer group">
-                <input type="checkbox" formControlName="isActive" class="peer hidden">
+            <div class="flex items-center gap-4 group cursor-pointer"
+                (click)="form.get('isActive')?.setValue(!form.get('isActive')?.value)">
 
-                <div
-                    class="w-12 h-6 bg-slate-700 rounded-full relative transition-all duration-300 peer-checked:bg-indigo-600">
-                    <div
-                        class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-all duration-300 transform peer-checked:translate-x-6">
+                <div class="relative w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"
+                    [class]="form.get('isActive')?.value ? 'bg-indigo-600 shadow-[0_0_12px_rgba(79,70,229,0.4)]' : 'bg-slate-700'">
+
+                    <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform duration-300 ease-in-out shadow-sm"
+                        [style.transform]="form.get('isActive')?.value ? 'translateX(24px)' : 'translateX(0)'">
                     </div>
                 </div>
 
-                <span class="text-sm font-bold text-slate-400 group-hover:text-white transition-colors">
+                <span class="text-sm font-bold text-slate-400 group-hover:text-white transition-colors select-none">
                     Registro Activo
                 </span>
-            </label>
+            </div>
 
-            <label class="flex items-center gap-3 cursor-pointer group">
-                <input type="checkbox" formControlName="isParent" class="peer hidden">
+            <div class="flex items-center gap-4 group cursor-pointer"
+                (click)="form.get('isParent')?.setValue(!form.get('isParent')?.value)">
 
-                <div
-                    class="w-12 h-6 bg-slate-700 rounded-full relative transition-all duration-300 peer-checked:bg-emerald-600">
-                    <div
-                        class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-all duration-300 transform peer-checked:translate-x-6">
+                <div class="relative w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"
+                    [class]="form.get('isParent')?.value ? 'bg-emerald-600 shadow-[0_0_12px_rgba(16,185,129,0.4)]' : 'bg-slate-700'">
+
+                    <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform duration-300 ease-in-out shadow-sm"
+                        [style.transform]="form.get('isParent')?.value ? 'translateX(24px)' : 'translateX(0)'">
                     </div>
                 </div>
 
-                <span class="text-sm font-bold text-slate-400 group-hover:text-white transition-colors">
+                <span class="text-sm font-bold text-slate-400 group-hover:text-white transition-colors select-none">
                     ¿Es un Nodo Padre?
                 </span>
-            </label>
+            </div>
+
         </div>
 
         @if (initialData?.children && initialData!.children!.length > 0) {
