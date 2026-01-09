@@ -1,1 +1,40 @@
-<p>sign-up works!</p>
+<div class="min-h-screen flex items-center justify-center bg-slate-950 p-6">
+    <div
+        class="w-full max-w-md space-y-8 bg-slate-900/50 p-10 rounded-3xl border border-slate-800 shadow-2xl backdrop-blur-xl">
+
+        <div class="text-center">
+            <h2 class="text-3xl font-bold text-white tracking-tight">Crear Cuenta</h2>
+            <p class="text-slate-400 mt-2 text-sm">Únete a la plataforma y gestiona tus proyectos.</p>
+        </div>
+
+        <form [formGroup]="signUpForm" class="space-y-6 mt-8">
+
+            <app-form-input formControlName="fullName" label="Nombre Completo" placeholder="Juan Pérez" icon="person"
+                [error]="getErrorMessage('fullName')">
+            </app-form-input>
+
+            <app-form-input formControlName="email" type="email" label="Correo Electrónico"
+                placeholder="usuario@dominio.com" icon="alternate_email" [error]="getErrorMessage('email')">
+            </app-form-input>
+
+            <app-form-input formControlName="password" type="password" label="Contraseña" placeholder="••••••••"
+                icon="lock" [error]="getErrorMessage('password')">
+            </app-form-input>
+
+            <button (click)="onSubmit()" [disabled]="signUpForm.invalid"
+                class="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20 active:scale-95 mt-4">
+                Empezar Ahora
+            </button>
+
+        </form>
+
+        <div class="text-center mt-6">
+            <p class="text-slate-500 text-xs">
+                ¿Ya tienes cuenta?
+                <a routerLink="/login" class="text-indigo-400 hover:text-indigo-300 font-bold transition-colors">Inicia
+                    Sesión</a>
+            </p>
+        </div>
+
+    </div>
+</div>

@@ -13,6 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { GenericTable } from './components/generic-table/generic-table';
 import { IconPicker } from './components/icon-picker/icon-picker';
 import { Breadcrumb } from './components/breadcrumb/breadcrumb';
+import { FormInput } from './components/ui/form-input/form-input';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { Breadcrumb } from './components/breadcrumb/breadcrumb';
     Dashboard,
     GenericTable,
     IconPicker,
-    Breadcrumb
+    Breadcrumb,
+    FormInput
   ],
   imports: [
     CommonModule,
@@ -38,7 +40,8 @@ import { Breadcrumb } from './components/breadcrumb/breadcrumb';
     Dashboard,
     Layout,
     GenericTable,
-    IconPicker
+    IconPicker,
+    FormInput
   ]
 })
 export class SharedModule { }
