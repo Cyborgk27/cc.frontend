@@ -1,65 +1,112 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, effect } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../../core/api';
+import { Alert } from '../../../../core/services/ui/alert';
+import { SecurityFacade } from '../../../../core/services/security-facade';
 
 @Component({
   selector: 'app-sign-up',
-  standalone: false, // Manteniendo tu configuración
-  templateUrl: './sign-up.html',
-  styleUrl: './sign-up.css',
+  standalone: false,
+  templateUrl: './sign-up.html'
 })
-export class SignUp {
+export class SignUp implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
-  // private authFacade = inject(AuthFacade); // Descomenta cuando tengas tu Facade
+  private authService = inject(AuthService);
+  private alert = inject(Alert);
+  private securityFacade = inject(SecurityFacade); // Inyectamos el Facade de seguridad
 
   public signUpForm: FormGroup;
   public isLoading: boolean = false;
+  
+  // Referencia a la señal de roles del Facade
+  public roles = this.securityFacade.roles;
 
   constructor() {
     this.signUpForm = this.fb.group({
-      fullName: ['', [Validators.required, Validators.minLength(3)]],
+      firstName: ['', [Validators.required]],
+      lastName: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      roleId: [null, [Validators.required]] // Nuevo campo para el rol
+    });
+
+    /**
+     * Lógica de Auto-seteo de Rol:
+     * El effect detecta cuando la señal 'roles' cambia (cuando fetchAll termina)
+     * y busca el rol 'Viewer' para pre-seleccionarlo.
+     */
+    effect(() => {
+      const currentRoles = this.roles();
+      if (currentRoles.length > 0) {
+        const viewerRole = currentRoles.find(r => 
+          r.name?.toLowerCase().includes('viewer')
+        );
+        if (viewerRole) {
+          this.signUpForm.get('roleId')?.patchValue(viewerRole.id);
+        }
+      }
     });
   }
 
-  /**
-   * Obtiene mensajes de error amigables para el componente app-form-input
-   */
-  getErrorMessage(controlName: string): string {
-    const control = this.signUpForm.get(controlName);
-    if (!control || !control.touched || !control.errors) return '';
-
-    if (control.errors['required']) return 'Este campo es obligatorio';
-    if (control.errors['email']) return 'El formato del correo no es válido';
-    if (control.errors['minlength']) {
-      const min = control.errors['minlength'].requiredLength;
-      return `Debe tener al menos ${min} caracteres`;
-    }
-    
-    return 'Campo inválido';
+  ngOnInit(): void {
+    // Cargamos los catálogos de seguridad al iniciar el componente
+    this.securityFacade.fetchAll();
   }
 
-  /**
-   * Procesa el registro
-   */
   onSubmit(): void {
     if (this.signUpForm.invalid) {
       this.signUpForm.markAllAsTouched();
+      this.alert.toast('Por favor, completa los campos correctamente', 'error');
       return;
     }
 
     this.isLoading = true;
-    const rawData = this.signUpForm.value;
 
-    console.log('Registrando usuario...', rawData);
+    // Mapeo de datos incluyendo el rol seleccionado
+    const requestParams = {
+      userDto: {
+        firstName: this.signUpForm.value.firstName,
+        lastName: this.signUpForm.value.lastName,
+        email: this.signUpForm.value.email,
+        userName: this.signUpForm.value.email, 
+        password: this.signUpForm.value.password,
+        roleId: this.signUpForm.value.roleId // Enviamos el ID del rol a la API
+      }
+    };
 
-    // Simulación de llamada al servicio
-    setTimeout(() => {
-      this.isLoading = false;
-      // this.authFacade.signUp(rawData);
-      // this.router.navigate(['/dashboard']);
-    }, 2000);
+    this.authService.apiAuthRegisterPost(requestParams).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.alert.success('Cuenta creada exitosamente. Ahora puedes iniciar sesión.')
+          .then(() => this.router.navigate(['/sign-in']));
+      },
+      error: (err) => {
+        this.isLoading = false;
+        
+        // Manejo de errores basado en tu respuesta de API
+        let serverMessage = 'Ocurrió un error inesperado';
+        
+        if (err.error?.errors) {
+          // Si vienen múltiples errores de validación, tomamos el primero
+          const errorKeys = Object.keys(err.error.errors);
+          serverMessage = err.error.errors[errorKeys[0]][0];
+        } else if (err.error?.Message) {
+          serverMessage = err.error.Message;
+        }
+
+        this.alert.error(serverMessage, 'Error de Registro');
+      }
+    });
+  }
+
+  getErrorMessage(controlName: string): string {
+    const control = this.signUpForm.get(controlName);
+    if (!control || !control.touched || !control.errors) return '';
+    if (control.errors['required']) return 'Obligatorio';
+    if (control.errors['email']) return 'Email inválido';
+    if (control.errors['minlength']) return 'Mínimo 6 caracteres';
+    return '';
   }
 }

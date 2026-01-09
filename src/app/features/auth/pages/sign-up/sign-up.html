@@ -7,11 +7,17 @@
             <p class="text-slate-400 mt-2 text-sm">Únete a la plataforma y gestiona tus proyectos.</p>
         </div>
 
-        <form [formGroup]="signUpForm" class="space-y-6 mt-8">
+        <form [formGroup]="signUpForm" class="space-y-4 mt-8">
 
-            <app-form-input formControlName="fullName" label="Nombre Completo" placeholder="Juan Pérez" icon="person"
-                [error]="getErrorMessage('fullName')">
-            </app-form-input>
+            <div class="grid grid-cols-2 gap-4">
+                <app-form-input formControlName="firstName" label="Nombre" placeholder="Ej: Juan" icon="badge"
+                    [error]="getErrorMessage('firstName')">
+                </app-form-input>
+
+                <app-form-input formControlName="lastName" label="Apellido" placeholder="Ej: Pérez" icon="badge"
+                    [error]="getErrorMessage('lastName')">
+                </app-form-input>
+            </div>
 
             <app-form-input formControlName="email" type="email" label="Correo Electrónico"
                 placeholder="usuario@dominio.com" icon="alternate_email" [error]="getErrorMessage('email')">
@@ -21,12 +27,66 @@
                 icon="lock" [error]="getErrorMessage('password')">
             </app-form-input>
 
-            <button (click)="onSubmit()" [disabled]="signUpForm.invalid"
-                class="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20 active:scale-95 mt-4">
-                Empezar Ahora
-            </button>
+            <div class="space-y-2 group">
+                <label
+                    class="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.2em] ml-1 transition-colors group-focus-within:text-indigo-300">
+                    Rol de Acceso
+                </label>
+
+                <div class="relative flex items-center">
+                    <span
+                        class="material-icons absolute left-4 text-slate-500 text-xl transition-colors group-focus-within:text-indigo-500">
+                        admin_panel_settings
+                    </span>
+
+                    <select formControlName="roleId" class="w-full bg-slate-900/50 border border-slate-700 text-white pl-12 pr-10 py-3.5 rounded-2xl 
+                   outline-none transition-all duration-300 appearance-none backdrop-blur-md
+                   focus:border-indigo-500 focus:bg-slate-900 focus:shadow-[0_0_15px_rgba(79,70,229,0.1)]
+                   disabled:opacity-50 cursor-pointer">
+
+                        <option [value]="null" disabled class="bg-slate-900 text-slate-500">Selecciona un rol</option>
+
+                        @for (role of roles(); track role.id) {
+                        <option [value]="role.id" class="bg-slate-900 text-white">
+                            {{ role.name }}
+                        </option>
+                        }
+                    </select>
+
+                    <span
+                        class="material-icons absolute right-4 text-slate-500 pointer-events-none transition-transform group-focus-within:rotate-180">
+                        expand_more
+                    </span>
+                </div>
+
+                @if (signUpForm.get('roleId')?.touched && signUpForm.get('roleId')?.invalid) {
+                <p class="text-[11px] text-rose-400 font-medium ml-2 animate-in slide-in-from-top-1">
+                    Debes asignar un rol al usuario
+                </p>
+                }
+            </div>
 
         </form>
+
+        <div class="pt-4">
+            <button type="submit" (click)="onSubmit()" [disabled]="signUpForm.invalid || isLoading"
+                class="w-full flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 disabled:cursor-not-allowed text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20 active:scale-95">
+
+                @if (isLoading) {
+                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                </svg>
+                <span>Procesando...</span>
+                } @else {
+                <span>Registrarse</span>
+                <span class="material-icons text-sm">arrow_forward</span>
+                }
+            </button>
+        </div>
 
         <div class="text-center mt-6">
             <p class="text-slate-500 text-xs">
