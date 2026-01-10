@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CatalogDto } from '../../../../core/api';
 import { TableColumn } from '../../../../shared/interfaces/table-column.interface';
@@ -15,8 +15,12 @@ export class CatalogForm implements OnInit {
   @Input() initialData?: CatalogDto;
   @Input() parentCatalogs: CatalogDto[] = [];
   @Output() onSave = new EventEmitter<CatalogDto>();
+  @Output() onCreateChild = new EventEmitter<CatalogDto>(); // Nuevo evento
 
-  // Columnas para la tabla de hijos (si existen)
+  // Estado del Modal de Hijos
+  public showChildModal = signal(false);
+  public childForm!: FormGroup;
+
   public childColumns: TableColumn[] = [
     { key: 'name', label: 'ID Técnico', class: 'font-mono text-xs text-indigo-300' },
     { key: 'showName', label: 'Nombre Visual' },
@@ -24,7 +28,6 @@ export class CatalogForm implements OnInit {
     { key: 'isActive', label: 'Estado' }
   ];
 
-  // Definición del formulario con validaciones
   public form: FormGroup = this.fb.group({
     id: [null],
     parentId: [null],
@@ -39,36 +42,64 @@ export class CatalogForm implements OnInit {
 
   ngOnInit(): void {
     if (this.initialData) {
-      // Usamos patchValue para cargar los datos si estamos en modo edición
       this.form.patchValue(this.initialData);
     }
+    this.initChildForm();
+  }
+
+  private initChildForm() {
+    this.childForm = this.fb.group({
+      id: [null],
+      parentId: [{ value: this.initialData?.id, disabled: true }, Validators.required],
+      name: ['', [Validators.required]],
+      showName: ['', [Validators.required]],
+      value: [''],
+      isActive: [true],
+      isParent: [false]
+    });
   }
 
   /**
-   * Procesa los errores para el componente app-form-input
+   * Abre el modal y asegura que el parentId sea el correcto
    */
-  getErrorMessage(controlName: string): string {
-    const control = this.form.get(controlName);
-    if (!control || !control.touched || !control.errors) return '';
+  openChildModal() {
+    if (!this.initialData?.id) return;
+    this.childForm.reset({
+      parentId: this.initialData.id,
+      isActive: true,
+      isParent: false
+    });
+    this.childForm.get('parentId')?.disable(); // Bloqueado por seguridad
+    this.showChildModal.set(true);
+  }
+
+  saveChild() {
+    if (this.childForm.invalid) return;
     
-    if (control.errors['required']) return 'Este campo es obligatorio';
-    if (control.errors['minlength']) return 'Debe tener al menos 3 caracteres';
+    // getRawValue incluye el parentId aunque esté disabled
+    const childData = this.childForm.getRawValue();
+    this.onCreateChild.emit(childData);
+    
+    // Reset para crear el siguiente hijo de inmediato
+    this.childForm.reset({
+      parentId: this.initialData?.id,
+      isActive: true,
+      isParent: false
+    });
+  }
+
+  getErrorMessage(controlName: string, formGroup = this.form): string {
+    const control = formGroup.get(controlName);
+    if (!control || !control.touched || !control.errors) return '';
+    if (control.errors['required']) return 'Obligatorio';
     return '';
   }
 
-  /**
-   * Envía el formulario al componente padre
-   */
   submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
-
-    // Usamos getRawValue() por si en el futuro bloqueamos algún campo (como el ID)
-    const rawData = this.form.getRawValue();
-    
-    // Emitimos el evento hacia el componente que use este formulario
-    this.onSave.emit(rawData);
+    this.onSave.emit(this.form.getRawValue());
   }
 }
