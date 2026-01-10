@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { Layout } from './shared/components/layout/layout';
 import { Dashboard } from './shared/components/pages/dashboard/dashboard';
 import { authGuard } from './core/guards/auth.guard';
+import { ErrorPage } from './shared/components/pages/error-page/error-page';
 
 const routes: Routes = [
   {
@@ -12,7 +13,7 @@ const routes: Routes = [
   {
     path: '',
     component: Layout,
-    canActivate:[authGuard],
+    canActivate: [authGuard],
     children: [
       {
         path: 'dashboard',
@@ -24,40 +25,64 @@ const routes: Routes = [
       {
         path: 'catalogs',
         loadChildren: () => import('./features/catalogs/catalogs-module').then(m => m.CatalogsModule),
-        data: { 
+        data: {
           permission: 'CATALOGS_READ',
-          breadcrumb: 'Catálogos' 
+          breadcrumb: 'Catálogos'
         },
-        canActivate:[authGuard],
+        canActivate: [authGuard],
       },
       {
         path: 'projects',
         loadChildren: () => import('./features/projects/projects-module').then(m => m.ProjectsModule),
-        data: { 
+        data: {
           permission: 'PROJECT_READ',
           breadcrumb: 'Proyectos'
         },
-        canActivate:[authGuard],
+        canActivate: [authGuard],
       },
       {
         path: 'security',
         loadChildren: () => import('./features/security/security-module').then(m => m.SecurityModule),
-        data: { 
+        data: {
           permission: 'SECURITY_READ',
-          breadcrumb: 'Seguridad' 
+          breadcrumb: 'Seguridad'
         },
-        canActivate:[authGuard],
+        canActivate: [authGuard],
       },
       {
         path: 'users',
         loadChildren: () => import('./features/users/users-module').then(m => m.UsersModule),
-        data: { 
+        data: {
           permission: 'USERS_READ',
-          breadcrumb: 'Usuarios' 
+          breadcrumb: 'Usuarios'
         },
-        canActivate:[authGuard],
+        canActivate: [authGuard],
       },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+      {
+        path: '403',
+        component: ErrorPage,
+        data: {
+          code: '403',
+          title: 'Acceso Restringido',
+          message: 'No tienes los permisos necesarios para ver este contenido. Contacta al administrador.',
+          icon: 'lock_person'
+        }
+      },
+      {
+        path: '404',
+        component: ErrorPage,
+        data: {
+          code: '404',
+          title: 'Página no encontrada',
+          message: 'Parece que te has perdido en el sistema. La ruta solicitada no existe.',
+          icon: 'running_with_errors'
+        }
+      },
+      // Comodín para cualquier ruta no definida
+      {
+        path: '**',
+        redirectTo: '404'
+      }
     ]
   },
 

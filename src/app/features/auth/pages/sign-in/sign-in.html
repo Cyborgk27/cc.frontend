@@ -1,59 +1,118 @@
-<div class="min-h-screen flex items-center justify-center bg-slate-950 p-6">
-    <div class="w-full max-w-md space-y-8 bg-slate-900/50 p-10 rounded-3xl border border-slate-800 shadow-2xl backdrop-blur-xl">
+<div class="min-h-screen w-full flex bg-slate-950 overflow-hidden">
+    
+    <div class="w-full lg:w-[40%] flex items-center justify-center p-8 sm:p-12 relative z-10 bg-slate-950">
+        <div class="w-full max-w-md space-y-8 animate-in slide-in-from-left duration-700">
+            
+            <div class="text-left">
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-600/30">
+                        <span class="material-icons text-white">bolt</span>
+                    </div>
+                    <h1 class="text-2xl font-black text-white tracking-tighter">
+                        CC <span class="text-indigo-500">API</span>
+                    </h1>
+                </div>
+                <h2 class="text-3xl font-bold text-white tracking-tight">Bienvenido de nuevo</h2>
+                <p class="text-slate-500 mt-2 text-sm">Por favor, ingresa tus credenciales para acceder.</p>
+            </div>
 
-        <div class="text-center">
-            <h1 class="text-3xl font-extrabold text-white tracking-tight">
-                CC <span class="text-indigo-500">API</span>
-            </h1>
-            <p class="text-slate-400 mt-2 text-sm">Ingresa a tu panel de control</p>
+            <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-5 mt-8">
+                <app-form-input 
+                    formControlName="email" 
+                    type="email" 
+                    label="Correo Electrónico"
+                    placeholder="correo@ejemplo.com" 
+                    icon="alternate_email" 
+                    [error]="getErrorMessage('email')">
+                </app-form-input>
+
+                <app-form-input 
+                    formControlName="password" 
+                    type="password" 
+                    label="Contraseña" 
+                    placeholder="••••••••"
+                    icon="lock" 
+                    [error]="getErrorMessage('password')">
+                </app-form-input>
+<!-- 
+                <div class="flex items-center justify-between text-xs font-medium">
+                    <label class="flex items-center gap-2 text-slate-400 cursor-pointer hover:text-slate-300">
+                        <input type="checkbox" class="accent-indigo-500 rounded border-slate-800 bg-slate-900">
+                        Recordarme
+                    </label>
+                    <a href="#" class="text-indigo-400 hover:text-indigo-300 transition-colors">¿Olvidaste tu contraseña?</a>
+                </div> -->
+
+                <div class="pt-4">
+                    <button type="submit" 
+                        [disabled]="loginForm.invalid || isLoading()"
+                        class="w-full flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 disabled:cursor-not-allowed text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20 active:scale-95">
+                        
+                        @if (isLoading()) {
+                            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span>Autenticando...</span>
+                        } @else {
+                            <span>Iniciar Sesión</span>
+                            <span class="material-icons text-sm">arrow_forward</span>
+                        }
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center mt-8">
+                <p class="text-slate-500 text-xs">
+                    ¿No tienes cuenta todavía?
+                    <a routerLink="/auth/sign-up" class="text-indigo-400 hover:text-indigo-300 font-bold transition-colors">
+                        Crea una cuenta gratis
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="hidden lg:flex lg:w-[60%] relative bg-slate-900 items-center justify-center p-12 overflow-hidden">
+        
+        <div class="absolute top-0 left-0 w-full h-full opacity-40">
+            <div class="absolute top-[-10%] right-[-10%] w-96 h-96 bg-indigo-600/20 blur-[120px] rounded-full"></div>
+            <div class="absolute bottom-[-10%] left-[-10%] w-96 h-96 bg-purple-600/20 blur-[120px] rounded-full"></div>
+            <div class="absolute inset-0" style="background-image: radial-gradient(#334155 1px, transparent 1px); background-size: 40px 40px;"></div>
         </div>
 
-        <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-5 mt-8">
-            
-            <app-form-input 
-                formControlName="email" 
-                type="email" 
-                label="Correo Electrónico"
-                placeholder="correo@ejemplo.com" 
-                icon="alternate_email" 
-                [error]="getErrorMessage('email')">
-            </app-form-input>
-
-            <app-form-input 
-                formControlName="password" 
-                type="password" 
-                label="Contraseña" 
-                placeholder="••••••••"
-                icon="lock" 
-                [error]="getErrorMessage('password')">
-            </app-form-input>
-
-            <div class="pt-2">
-                <button type="submit" 
-                    [disabled]="loginForm.invalid || isLoading()"
-                    class="w-full flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 disabled:cursor-not-allowed text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20 active:scale-95">
-                    
-                    @if (isLoading()) {
-                        <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <span>Autenticando...</span>
-                    } @else {
-                        <span>Entrar</span>
-                        <span class="material-icons text-sm">login</span>
-                    }
-                </button>
+        <div class="relative z-10 w-full max-w-2xl transform rotate-[-2deg] hover:rotate-0 transition-transform duration-1000">
+            <div class="bg-slate-800/80 backdrop-blur-2xl border border-slate-700 rounded-3xl p-4 shadow-[0_50px_100px_rgba(0,0,0,0.5)]">
+                <div class="flex items-center gap-2 mb-4 px-2">
+                    <div class="flex gap-1.5">
+                        <div class="w-3 h-3 rounded-full bg-rose-500/50"></div>
+                        <div class="w-3 h-3 rounded-full bg-amber-500/50"></div>
+                        <div class="w-3 h-3 rounded-full bg-emerald-500/50"></div>
+                    </div>
+                    <div class="ml-4 h-4 w-32 bg-slate-700/50 rounded-full"></div>
+                </div>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="col-span-2 h-40 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl animate-pulse"></div>
+                    <div class="h-40 bg-slate-700/30 rounded-2xl"></div>
+                    <div class="h-24 bg-slate-700/30 rounded-2xl"></div>
+                    <div class="col-span-2 h-24 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl animate-pulse" style="animation-delay: 1s"></div>
+                </div>
             </div>
-        </form>
 
-        <div class="text-center mt-6">
-            <p class="text-slate-500 text-xs">
-                ¿No tienes cuenta?
-                <a routerLink="/auth/sign-up" class="text-indigo-400 hover:text-indigo-300 font-bold transition-colors">
-                    Regístrate aquí
-                </a>
-            </p>
+            <div class="absolute -bottom-6 -right-6 bg-white p-4 rounded-2xl shadow-2xl flex items-center gap-4 animate-bounce duration-[3000ms]">
+                <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600">
+                    <span class="material-icons">trending_up</span>
+                </div>
+                <div>
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Optimización</p>
+                    <p class="text-lg font-black text-slate-900">+85.4%</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-12 left-12 right-12">
+            <h3 class="text-white text-xl font-bold">Gestión de Catálogos de Nueva Generación</h3>
+            <p class="text-slate-400 text-sm mt-1">Centraliza, organiza y escala tus datos con CC API.</p>
         </div>
     </div>
 </div>

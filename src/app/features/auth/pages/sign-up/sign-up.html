@@ -1,98 +1,140 @@
-<div class="min-h-screen flex items-center justify-center bg-slate-950 p-6">
-    <div
-        class="w-full max-w-md space-y-8 bg-slate-900/50 p-10 rounded-3xl border border-slate-800 shadow-2xl backdrop-blur-xl">
-
-        <div class="text-center">
-            <h2 class="text-3xl font-bold text-white tracking-tight">Crear Cuenta</h2>
-            <p class="text-slate-400 mt-2 text-sm">Únete a la plataforma y gestiona tus proyectos.</p>
-        </div>
-
-        <form [formGroup]="signUpForm" class="space-y-4 mt-8">
-
-            <div class="grid grid-cols-2 gap-4">
-                <app-form-input formControlName="firstName" label="Nombre" placeholder="Ej: Juan" icon="badge"
-                    [error]="getErrorMessage('firstName')">
-                </app-form-input>
-
-                <app-form-input formControlName="lastName" label="Apellido" placeholder="Ej: Pérez" icon="badge"
-                    [error]="getErrorMessage('lastName')">
-                </app-form-input>
+<div class="min-h-screen w-full flex bg-slate-950 overflow-hidden">
+    
+    <div class="w-full lg:w-[45%] flex items-center justify-center p-8 sm:p-12 relative z-10 bg-slate-950 border-r border-slate-900">
+        <div class="w-full max-w-md space-y-6 animate-in slide-in-from-left duration-700">
+            
+            <div class="text-left">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg">
+                        <span class="material-icons text-white text-sm">person_add</span>
+                    </div>
+                    <h1 class="text-xl font-black text-white tracking-tighter">
+                        CC <span class="text-indigo-500">API</span>
+                    </h1>
+                </div>
+                <h2 class="text-3xl font-bold text-white tracking-tight">Crear Cuenta</h2>
+                <p class="text-slate-400 mt-2 text-sm">Únete a nuestra plataforma de gestión inteligente.</p>
             </div>
 
-            <app-form-input formControlName="email" type="email" label="Correo Electrónico"
-                placeholder="usuario@dominio.com" icon="alternate_email" [error]="getErrorMessage('email')">
-            </app-form-input>
+            <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" class="space-y-4 mt-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <app-form-input formControlName="firstName" label="Nombre" placeholder="Juan" icon="badge"
+                        [error]="getErrorMessage('firstName')">
+                    </app-form-input>
 
-            <app-form-input formControlName="password" type="password" label="Contraseña" placeholder="••••••••"
-                icon="lock" [error]="getErrorMessage('password')">
-            </app-form-input>
-
-            <div class="space-y-2 group">
-                <label
-                    class="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.2em] ml-1 transition-colors group-focus-within:text-indigo-300">
-                    Rol de Acceso
-                </label>
-
-                <div class="relative flex items-center">
-                    <span
-                        class="material-icons absolute left-4 text-slate-500 text-xl transition-colors group-focus-within:text-indigo-500">
-                        admin_panel_settings
-                    </span>
-
-                    <select formControlName="roleId"
-                        class="w-full bg-slate-900/50 border border-slate-700 text-white pl-12 pr-10 py-3.5 rounded-2xl outline-none transition-all duration-300 appearance-none backdrop-blur-md focus:border-indigo-500 focus:bg-slate-900 focus:shadow-[0_0_15px_rgba(79,70,229,0.1)] disabled:opacity-50 cursor-pointer">
-
-                        <option [value]="null" disabled class="bg-slate-900 text-slate-500">Selecciona un rol</option>
-
-                        @for (role of roles(); track role.id) {
-                        <option [value]="role.id" class="bg-slate-900 text-white">
-                            {{ role.showName }}
-                        </option>
-                        }
-                    </select>
-
-                    <span
-                        class="material-icons absolute right-4 text-slate-500 pointer-events-none transition-transform group-focus-within:rotate-180">
-                        expand_more
-                    </span>
+                    <app-form-input formControlName="lastName" label="Apellido" placeholder="Pérez" icon="badge"
+                        [error]="getErrorMessage('lastName')">
+                    </app-form-input>
                 </div>
 
-                @if (signUpForm.get('roleId')?.touched && signUpForm.get('roleId')?.invalid) {
-                <p class="text-[11px] text-rose-400 font-medium ml-2 animate-in slide-in-from-top-1">
-                    Debes asignar un rol al usuario
+                <app-form-input formControlName="email" type="email" label="Correo Electrónico"
+                    placeholder="usuario@dominio.com" icon="alternate_email" [error]="getErrorMessage('email')">
+                </app-form-input>
+
+                <app-form-input formControlName="password" type="password" label="Contraseña" placeholder="••••••••"
+                    icon="lock" [error]="getErrorMessage('password')">
+                </app-form-input>
+
+                <div class="space-y-2 group">
+                    <label class="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.2em] ml-1">
+                        Rol de Acceso
+                    </label>
+
+                    <div class="relative flex items-center">
+                        <span class="material-icons absolute left-4 text-slate-500 text-xl group-focus-within:text-indigo-500 transition-colors">
+                            admin_panel_settings
+                        </span>
+
+                        <select formControlName="roleId"
+                            class="w-full bg-slate-900/50 border border-slate-700 text-white pl-12 pr-10 py-3.5 rounded-2xl outline-none transition-all appearance-none focus:border-indigo-500 focus:bg-slate-900 shadow-sm cursor-pointer">
+                            <option [value]="null" disabled>Selecciona un rol</option>
+                            @for (role of roles(); track role.id) {
+                                <option [value]="role.id">{{ role.showName }}</option>
+                            }
+                        </select>
+
+                        <span class="material-icons absolute right-4 text-slate-500 pointer-events-none group-focus-within:rotate-180 transition-transform">
+                            expand_more
+                        </span>
+                    </div>
+                    @if (signUpForm.get('roleId')?.touched && signUpForm.get('roleId')?.invalid) {
+                        <p class="text-[11px] text-rose-400 font-medium ml-2">Debes asignar un rol</p>
+                    }
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" [disabled]="signUpForm.invalid || isLoading"
+                        class="w-full flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20 active:scale-95">
+                        
+                        @if (isLoading) {
+                            <svg class="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span>Creando cuenta...</span>
+                        } @else {
+                            <span>Registrarse</span>
+                            <span class="material-icons text-sm">arrow_forward</span>
+                        }
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center mt-6">
+                <p class="text-slate-500 text-xs font-medium">
+                    ¿Ya tienes cuenta? 
+                    <a routerLink="/auth/sign-in" class="text-indigo-400 hover:text-indigo-300 font-bold transition-colors">
+                        Inicia Sesión aquí
+                    </a>
                 </p>
-                }
             </div>
+        </div>
+    </div>
 
-        </form>
-
-        <div class="pt-4">
-            <button type="submit" (click)="onSubmit()" [disabled]="signUpForm.invalid || isLoading"
-                class="w-full flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 disabled:cursor-not-allowed text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20 active:scale-95">
-
-                @if (isLoading) {
-                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
-                    viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                    </path>
-                </svg>
-                <span>Procesando...</span>
-                } @else {
-                <span>Registrarse</span>
-                <span class="material-icons text-sm">arrow_forward</span>
-                }
-            </button>
+    <div class="hidden lg:flex lg:w-[55%] bg-slate-900 relative items-center justify-center p-16 overflow-hidden">
+        
+        <div class="absolute inset-0 z-0">
+            <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 blur-[120px] rounded-full"></div>
+            <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500/10 blur-[120px] rounded-full"></div>
+            <div class="w-full h-full opacity-20" style="background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');"></div>
         </div>
 
-        <div class="text-center mt-6">
-            <p class="text-slate-500 text-xs">
-                ¿Ya tienes cuenta?
-                <a routerLink="/login" class="text-indigo-400 hover:text-indigo-300 font-bold transition-colors">Inicia
-                    Sesión</a>
-            </p>
-        </div>
+        <div class="relative z-10 max-w-lg">
+            <h3 class="text-4xl font-black text-white leading-tight mb-8">
+                Empieza a gestionar tus <span class="text-indigo-500 underline decoration-indigo-500/30">proyectos</span> con potencia.
+            </h3>
 
+            <div class="space-y-6">
+                <div class="flex gap-4 p-4 rounded-2xl bg-slate-800/40 backdrop-blur-md border border-slate-700/50 transform hover:translate-x-2 transition-transform">
+                    <div class="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+                        <span class="material-icons">security</span>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold">Seguridad basada en roles</h4>
+                        <p class="text-slate-400 text-sm">Control total sobre quién accede a qué información.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 p-4 rounded-2xl bg-slate-800/40 backdrop-blur-md border border-slate-700/50 transform hover:translate-x-2 transition-transform">
+                    <div class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+                        <span class="material-icons">speed</span>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold">Rendimiento Optimizado</h4>
+                        <p class="text-slate-400 text-sm">Nuestra API responde en milisegundos para tu flujo de trabajo.</p>
+                    </div>
+                </div>
+
+                <!-- <div class="flex gap-4 p-4 rounded-2xl bg-slate-800/40 backdrop-blur-md border border-slate-700/50 transform hover:translate-x-2 transition-transform">
+                    <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
+                        <span class="material-icons">auto_graph</span>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-bold">Métricas en tiempo real</h4>
+                        <p class="text-slate-400 text-sm">Visualiza el avance de tus proyectos con dashboards dinámicos.</p>
+                    </div>
+                </div> -->
+            </div>
+        </div>
     </div>
 </div>

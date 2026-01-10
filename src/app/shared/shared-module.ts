@@ -14,6 +14,7 @@ import { GenericTable } from './components/generic-table/generic-table';
 import { IconPicker } from './components/icon-picker/icon-picker';
 import { Breadcrumb } from './components/breadcrumb/breadcrumb';
 import { FormInput } from './components/ui/form-input/form-input';
+import { ErrorPage } from './components/pages/error-page/error-page';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { FormInput } from './components/ui/form-input/form-input';
     GenericTable,
     IconPicker,
     Breadcrumb,
-    FormInput
+    FormInput,
+    ErrorPage
   ],
   imports: [
     CommonModule,
