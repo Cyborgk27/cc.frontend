@@ -1,118 +1,119 @@
 <div class="flex flex-col gap-6 animate-in fade-in duration-500">
     <form [formGroup]="form"
-        class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-800/40 p-8 rounded-3xl border border-slate-700/50 shadow-2xl">
+        class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-800/40 p-8 rounded-3xl border border-slate-700/50 shadow-2xl backdrop-blur-md">
 
-        <div class="space-y-1">
-            <label class="text-xs font-bold text-indigo-400 uppercase tracking-wider ml-1">Identificador Técnico
-                (Name)</label>
-            <input formControlName="name"
-                class="w-full bg-slate-900 border border-slate-700 text-white p-3 rounded-xl focus:border-indigo-500 outline-none transition-all placeholder:text-slate-600"
-                placeholder="Ej: ESTADO_ACTIVO">
-        </div>
+        <app-form-input 
+            formControlName="name" 
+            label="Identificador Técnico (Name)" 
+            placeholder="Ej: ESTADO_ACTIVO" 
+            icon="code"
+            [error]="getErrorMessage('name')">
+        </app-form-input>
 
-        <div class="space-y-1">
-            <label class="text-xs font-bold text-indigo-400 uppercase tracking-wider ml-1">Nombre Visual (Show
-                Name)</label>
-            <input formControlName="showName"
-                class="w-full bg-slate-900 border border-slate-700 text-white p-3 rounded-xl focus:border-indigo-500 outline-none transition-all placeholder:text-slate-600"
-                placeholder="Ej: Activo">
-        </div>
+        <app-form-input 
+            formControlName="showName" 
+            label="Nombre Visual (Show Name)" 
+            placeholder="Ej: Activo" 
+            icon="visibility"
+            [error]="getErrorMessage('showName')">
+        </app-form-input>
 
-        <div class="space-y-1 relative">
-            <label class="text-xs font-bold text-indigo-400 uppercase tracking-wider ml-1">Catálogo Padre</label>
-            <div class="relative group">
+        <div class="space-y-2 group">
+            <label class="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.2em] ml-1">
+                Catálogo Padre
+            </label>
+            <div class="relative flex items-center">
+                <span class="material-icons absolute left-4 text-slate-500 text-xl group-focus-within:text-indigo-500 transition-colors">
+                    account_tree
+                </span>
                 <select formControlName="parentId"
-                    class="w-full bg-slate-900 border border-slate-700 text-white p-3 pr-10 rounded-xl focus:border-indigo-500 outline-none transition-all appearance-none cursor-pointer hover:border-slate-600">
+                    class="w-full bg-slate-900/50 border border-slate-700 text-white pl-12 pr-10 py-3.5 rounded-2xl outline-none transition-all duration-300 appearance-none backdrop-blur-md focus:border-indigo-500 focus:bg-slate-900">
                     <option [ngValue]="null" class="bg-slate-900 text-slate-400 italic">-- Ninguno (Es Raíz) --</option>
                     @for (cat of parentCatalogs; track cat.id) {
-                    <option [ngValue]="cat.id" class="bg-slate-900 text-white">{{ cat.showName }}</option>
+                        <option [ngValue]="cat.id" class="bg-slate-900 text-white">{{ cat.showName }}</option>
                     }
                 </select>
-                <span
-                    class="material-icons absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none group-focus-within:text-indigo-500 transition-colors">expand_more</span>
+                <span class="material-icons absolute right-4 text-slate-500 pointer-events-none group-focus-within:rotate-180 transition-transform">
+                    expand_more
+                </span>
             </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-1">
-                <label class="text-xs font-bold text-indigo-400 uppercase tracking-wider ml-1">Abreviación</label>
-                <input formControlName="abbreviation"
-                    class="w-full bg-slate-900 border border-slate-700 text-white p-3 rounded-xl focus:border-indigo-500 outline-none transition-all"
-                    placeholder="Ej: ACT">
-            </div>
-            <div class="space-y-1">
-                <label class="text-xs font-bold text-indigo-400 uppercase tracking-wider ml-1">Valor Técnico</label>
-                <input formControlName="value"
-                    class="w-full bg-slate-900 border border-slate-700 text-white p-3 rounded-xl focus:border-indigo-500 outline-none transition-all"
-                    placeholder="Ej: 1">
-            </div>
+            <app-form-input 
+                formControlName="abbreviation" 
+                label="Abreviación" 
+                placeholder="Ej: ACT" 
+                icon="short_text">
+            </app-form-input>
+            <app-form-input 
+                formControlName="value" 
+                label="Valor Técnico" 
+                placeholder="Ej: 1" 
+                icon="tag">
+            </app-form-input>
         </div>
 
         <div class="space-y-1 md:col-span-2">
-            <label class="text-xs font-bold text-indigo-400 uppercase tracking-wider ml-1">Descripción</label>
+            <label class="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.2em] ml-1">Descripción</label>
             <textarea formControlName="description" rows="3"
-                class="w-full bg-slate-900 border border-slate-700 text-white p-3 rounded-xl focus:border-indigo-500 outline-none transition-all resize-none placeholder:text-slate-600"
+                class="w-full bg-slate-900/50 border border-slate-700 text-white p-4 rounded-2xl focus:border-indigo-500 outline-none transition-all resize-none placeholder:text-slate-600 backdrop-blur-md"
                 placeholder="Escribe el propósito de este catálogo..."></textarea>
         </div>
 
-        <div class="md:col-span-2 flex items-center gap-8 bg-slate-900/50 p-4 rounded-2xl border border-slate-700/30">
-
+        <div class="md:col-span-2 flex items-center gap-8 bg-slate-950/40 p-5 rounded-2xl border border-slate-700/30">
             <div class="flex items-center gap-4 group cursor-pointer"
                 (click)="form.get('isActive')?.setValue(!form.get('isActive')?.value)">
-
-                <div class="relative w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"
-                    [class]="form.get('isActive')?.value ? 'bg-indigo-600 shadow-[0_0_12px_rgba(79,70,229,0.4)]' : 'bg-slate-700'">
-
-                    <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform duration-300 ease-in-out shadow-sm"
-                        [style.transform]="form.get('isActive')?.value ? 'translateX(24px)' : 'translateX(0)'">
+                <div class="relative w-11 h-6 rounded-full transition-all duration-300"
+                    [class]="form.get('isActive')?.value ? 'bg-indigo-600 shadow-[0_0_15px_rgba(79,70,229,0.4)]' : 'bg-slate-700'">
+                    <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-all duration-300"
+                        [style.transform]="form.get('isActive')?.value ? 'translateX(20px)' : 'translateX(0)'">
                     </div>
                 </div>
-
-                <span class="text-sm font-bold text-slate-400 group-hover:text-white transition-colors select-none">
+                <span class="text-xs font-bold text-slate-400 group-hover:text-white transition-colors uppercase tracking-widest">
                     Registro Activo
                 </span>
             </div>
 
             <div class="flex items-center gap-4 group cursor-pointer"
                 (click)="form.get('isParent')?.setValue(!form.get('isParent')?.value)">
-
-                <div class="relative w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"
-                    [class]="form.get('isParent')?.value ? 'bg-emerald-600 shadow-[0_0_12px_rgba(16,185,129,0.4)]' : 'bg-slate-700'">
-
-                    <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform duration-300 ease-in-out shadow-sm"
-                        [style.transform]="form.get('isParent')?.value ? 'translateX(24px)' : 'translateX(0)'">
+                <div class="relative w-11 h-6 rounded-full transition-all duration-300"
+                    [class]="form.get('isParent')?.value ? 'bg-emerald-600 shadow-[0_0_15px_rgba(16,185,129,0.4)]' : 'bg-slate-700'">
+                    <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-all duration-300"
+                        [style.transform]="form.get('isParent')?.value ? 'translateX(20px)' : 'translateX(0)'">
                     </div>
                 </div>
-
-                <span class="text-sm font-bold text-slate-400 group-hover:text-white transition-colors select-none">
-                    ¿Es un Nodo Padre?
+                <span class="text-xs font-bold text-slate-400 group-hover:text-white transition-colors uppercase tracking-widest">
+                    ¿Es Nodo Padre?
                 </span>
             </div>
-
         </div>
 
         @if (initialData?.children && initialData!.children!.length > 0) {
         <div class="md:col-span-2 mt-4 space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-700 pb-2">
-                <h3 class="text-sm font-bold text-indigo-400 uppercase tracking-widest flex items-center gap-2">
+            <div class="flex items-center justify-between border-b border-slate-700/50 pb-2">
+                <h3 class="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.2em] flex items-center gap-2">
                     <span class="material-icons text-lg">account_tree</span>
                     Sub-Catálogos Dependientes
                 </h3>
-                <span class="text-xs text-slate-500 font-mono">{{ initialData?.children?.length }} registros</span>
+                <span class="text-[10px] text-slate-500 font-mono bg-slate-950 px-2 py-1 rounded-lg">
+                    {{ initialData?.children?.length }} REGISTROS
+                </span>
             </div>
-
-            <app-generic-table [data]="initialData!.children!" [columns]="childColumns" [pagination]="false"
-                [loading]="false">
+            <app-generic-table [data]="initialData!.children!" [columns]="childColumns" [pagination]="false" [loading]="false">
             </app-generic-table>
         </div>
         }
     </form>
 
-    <div class="flex justify-end gap-3">
+    <div class="flex justify-end items-center gap-4">
         <button type="button" routerLink="/catalogs"
-            class="px-8 py-3 text-slate-400 hover:text-white transition-colors font-bold">Cancelar</button>
+            class="px-6 py-3 text-slate-400 hover:text-rose-400 transition-colors font-bold text-sm uppercase tracking-widest">
+            Cancelar
+        </button>
         <button (click)="submit()" [disabled]="form.invalid"
-            class="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 text-white px-12 py-3 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20 active:scale-95">
+            class="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 text-white px-10 py-4 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20 active:scale-95 flex items-center gap-2">
+            <span class="material-icons text-sm">save</span>
             Guardar Catálogo
         </button>
     </div>
