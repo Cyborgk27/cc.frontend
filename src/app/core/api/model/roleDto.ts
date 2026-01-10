@@ -13,6 +13,7 @@ export interface RoleDto {
     id?: string | null;
     name?: string | null;
     showName?: string | null;
+    description?: string | null;
     permissionIds?: Array<number> | null;
 }
 
