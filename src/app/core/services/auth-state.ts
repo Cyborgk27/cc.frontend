@@ -16,6 +16,18 @@ export class AuthState {
   public permissions = computed<string[]>(() => this._session()?.permissions || []);
 
   /**
+   * Extrae el primer rol del arreglo. 
+   * Si no hay roles, devuelve un valor por defecto.
+   */
+  public userRole = computed(() => {
+    const roles = this._session()?.roles;
+    if (Array.isArray(roles) && roles.length > 0) {
+      return roles[0]; // Retorna "ADMINISTRATOR"
+    }
+    return 'GUEST';
+  });
+
+  /**
    * Ahora acepta tanto el tipo estricto de nuestras constantes 
    * como un string genérico para mayor flexibilidad.
    */

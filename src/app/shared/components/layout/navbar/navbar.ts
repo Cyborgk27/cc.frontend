@@ -4,6 +4,14 @@ import { NavigationEnd, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 
+// Definimos la interfaz para evitar el 'any' implícito
+interface NavItem {
+  name: string;
+  showName: string;
+  path: string;
+  icon: string;
+}
+
 @Component({
   selector: 'app-navbar',
   standalone: false,
@@ -11,13 +19,15 @@ import { filter, map } from 'rxjs';
   styleUrl: './navbar.css',
 })
 export class Navbar {
-private authState = inject(AuthState);
+  private authState = inject(AuthState);
   private router = inject(Router);
 
   public userFullName = this.authState.userFullName;
-  private menu = this.authState.navigation; // Acceso al signal de navegación
+  public userRole = this.authState.userRole;
+  
+  // Tipamos la señal de navegación como un arreglo de NavItem
+  private menu = this.authState.navigation as () => NavItem[];
 
-  // 1. Detectamos la URL actual de forma reactiva
   private currentUrl = toSignal(
     this.router.events.pipe(
       filter((e): e is NavigationEnd => e instanceof NavigationEnd),
@@ -26,17 +36,17 @@ private authState = inject(AuthState);
     { initialValue: this.router.url }
   );
 
-  // 2. Calculamos el título dinámico
   public moduleTitle = computed(() => {
     const url = this.currentUrl();
     
-    // Buscamos si la URL actual coincide con algún path de nuestro menú
-    const activeItem = this.menu().find((item: { path: string; }) => url.includes(item.path));
-    
     if (url.includes('dashboard')) return 'Panel de Control';
+
+    // Ahora 'item' está tipado correctamente como NavItem
+    const activeItem = this.menu()
+      .filter((item: NavItem) => item.path !== '/')
+      .find((item: NavItem) => url.startsWith(item.path));
     
-    // Si lo encuentra, muestra el showName (ej: "Catálogos"), si no, un genérico
-    return activeItem ? activeItem.showName : 'Sistema';
+    return activeItem ? activeItem.showName : 'Sistema Central';
   });
   
   logout() {
