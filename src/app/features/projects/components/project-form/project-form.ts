@@ -38,7 +38,7 @@ export class ProjectForm implements OnInit {
   private initForm() {
     this.form = this.fb.group({
       id: [null],
-      name: ['', Validators.required],
+      name: ['', [Validators.required, Validators.minLength(3)]],
       showName: ['', Validators.required],
       description: [''],
       isActive: [true],
@@ -49,6 +49,17 @@ export class ProjectForm implements OnInit {
 
   get apiKeysArray() {
     return this.form.get('apiKeys') as FormArray;
+  }
+
+  /**
+   * Procesa mensajes de error para app-form-input
+   */
+  getErrorMessage(controlName: string): string {
+    const control = this.form.get(controlName);
+    if (!control || !control.touched || !control.errors) return '';
+    if (control.errors['required']) return 'Este campo es obligatorio';
+    if (control.errors['minlength']) return 'Debe tener al menos 3 caracteres';
+    return '';
   }
 
   private checkRoute() {
@@ -75,12 +86,10 @@ export class ProjectForm implements OnInit {
     });
   }
 
-  /**
-   * Distribuye los catálogos entre las dos listas según lo que ya tiene el proyecto
-   */
-  private syncCatalogs(all: CatalogDto[], assignedIds: string[]) {
-    const selected = all.filter(c => assignedIds.includes(c.id! as any));
-    const available = all.filter(c => !assignedIds.includes(c.id! as any));
+  private syncCatalogs(all: CatalogDto[], assignedIds: any[]) {
+    // Aseguramos que los IDs sean comparables (string vs string)
+    const selected = all.filter(c => assignedIds.some(id => String(id) === String(c.id)));
+    const available = all.filter(c => !assignedIds.some(id => String(id) === String(c.id)));
     
     this.selectedCatalogs.set(selected);
     this.availableCatalogs.set(available);
@@ -97,7 +106,9 @@ export class ProjectForm implements OnInit {
     });
 
     this.apiKeysArray.clear();
-    project.apiKeys?.forEach(key => this.addApiKey(key));
+    if (project.apiKeys && project.apiKeys.length > 0) {
+      project.apiKeys.forEach(key => this.addApiKey(key));
+    }
   }
 
   // --- LÓGICA DRAG & DROP ---
@@ -114,8 +125,8 @@ export class ProjectForm implements OnInit {
       );
     }
     
-    // Actualizar el formControl con los nuevos IDs seleccionados
-    const newIds = this.selectedCatalogs().map(c => c.id as any);
+    // Sincronizar el Form con la señal de seleccionados
+    const newIds = this.selectedCatalogs().map(c => c.id);
     this.form.get('catalogIds')?.setValue(newIds);
     this.form.markAsDirty();
   }
@@ -136,6 +147,7 @@ export class ProjectForm implements OnInit {
       id: [data?.id || 0],
       title: [data?.title || '', Validators.required],
       description: [data?.description || ''],
+      // Mantenemos deshabilitado el token para que no sea editable visualmente
       key: [{ value: data?.key || 'Auto-generada al guardar', disabled: true }],
       expirationDate: [formattedDate],
       isIndefinite: [data?.isIndefinite ?? true],
@@ -148,28 +160,43 @@ export class ProjectForm implements OnInit {
   }
 
   removeApiKey(index: number) {
-    if (this.apiKeysArray.length > 0) {
+    // Si la key ya existe en BD (tiene ID), podríamos marcarla como isDeleted en lugar de borrarla del array
+    // Pero si es nueva, la eliminamos físicamente del FormArray
+    const control = this.apiKeysArray.at(index);
+    if (control.value.id === 0) {
       this.apiKeysArray.removeAt(index);
-      this.form.markAsDirty();
+    } else {
+      // Lógica para Soft Delete si el backend lo requiere
+      control.patchValue({ isDeleted: true });
+      // O simplemente removemos del array y dejamos que el backend maneje la diferencia
+      this.apiKeysArray.removeAt(index);
     }
+    this.form.markAsDirty();
   }
 
   save() {
     if (this.form.invalid) {
-      this.alert.error('Por favor, completa los campos requeridos');
+      this.form.markAllAsTouched();
+      this.alert.error('Por favor, completa los campos requeridos', 'Formulario incompleto');
       return;
     }
 
+    // getRawValue() es crítico aquí para incluir las 'keys' aunque estén disabled
     const projectData: ProjectDto = this.form.getRawValue();
 
     this.projectFacade.save(projectData).subscribe({
       next: (res) => {
         if (res.isSuccess) {
-          this.alert.success(this.isEditMode ? 'Proyecto actualizado' : 'Proyecto creado');
+          this.alert.toast(this.isEditMode ? 'Proyecto actualizado' : 'Proyecto creado');
           this.router.navigate(['/projects']);
+        } else {
+          this.alert.error(res.message || 'Ocurrió un error inesperado');
         }
       },
-      error: (err) => this.alert.error('Error al guardar: ' + err.message)
+      error: (err) => {
+        const msg = err.error?.message || 'Error de conexión con el servidor';
+        this.alert.error(msg, 'Error al guardar');
+      }
     });
   }
 }

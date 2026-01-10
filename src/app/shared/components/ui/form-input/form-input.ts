@@ -17,7 +17,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 export class FormInput implements ControlValueAccessor {
   @Input() label: string = '';
   @Input() placeholder: string = '';
-  @Input() type: 'text' | 'password' | 'number' | 'email' = 'text';
+  @Input() type: 'text' | 'password' | 'number' | 'email' | 'date' = 'text';
   @Input() icon: string = ''; // Nombre de Material Icon
   @Input() error: string = '';
 

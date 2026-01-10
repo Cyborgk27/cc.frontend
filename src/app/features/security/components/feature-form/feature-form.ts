@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SecurityFacade } from '../../../../core/services/security-facade';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Alert } from '../../../../core/services/ui/alert';
@@ -34,8 +34,8 @@ export class FeatureForm implements OnInit {
 
   private initForm() {
     this.form = this.fb.group({
-      id: [null], // Campo oculto para el ID en edición
-      name: ['', [Validators.required]],
+      id: [null],
+      name: ['', [Validators.required, Validators.minLength(3)]],
       path: ['', [Validators.required]],
       showName: ['', [Validators.required]],
       icon: ['extension', [Validators.required]],
@@ -43,24 +43,33 @@ export class FeatureForm implements OnInit {
     });
   }
 
+  /**
+   * Procesa mensajes de error para app-form-input
+   */
+  getErrorMessage(controlName: string): string {
+    const control = this.form.get(controlName);
+    if (!control || !control.touched || !control.errors) return '';
+    
+    if (control.errors['required']) return 'Este campo es obligatorio';
+    if (control.errors['minlength']) return 'Mínimo 3 caracteres';
+    return '';
+  }
+
   private checkEditMode() {
     this.featureId = this.route.snapshot.params['id'];
     
     if (this.featureId) {
       this.isEditMode = true;
-      // Buscamos la feature en el store de la facade o pedimos al servidor
-      // Suponiendo que fetchAll ya se ejecutó en la lista, podemos buscarla:
+      // Buscamos la feature en el store de la facade
       const existingFeature = this.security.features().find(f => f.id?.toString() === this.featureId);
 
       if (existingFeature) {
         this.patchData(existingFeature);
       } else {
-        // Si no está en el store (F5), la pedimos (aquí deberías tener un getById en tu facade)
-        this.alert.error('No se encontró la funcionalidad localmente.');
+        this.alert.error('No se encontró la funcionalidad en la sesión actual.');
         this.router.navigate(['/security']);
       }
     } else {
-      // Modo creación: agregamos un permiso vacío
       this.addPermission();
     }
   }
@@ -74,8 +83,8 @@ export class FeatureForm implements OnInit {
       icon: feature.icon || 'extension'
     });
 
-    // Cargar permisos asociados
-    // Asumiendo que permissions() en la facade tiene el featureId
+    // Limpiamos y cargamos permisos
+    this.permissionsArray.clear();
     const perms = this.security.permissions().filter(p => p.featureId?.toString() === this.featureId);
     
     if (perms.length > 0) {
@@ -107,13 +116,14 @@ export class FeatureForm implements OnInit {
 
   addPermission(data?: PermissionDto) {
     const permissionGroup = this.fb.group({
-      id: [data?.id || null], // ID si es edición
+      id: [data?.id || null],
       name: [data?.name || '', Validators.required],
       showName: [data?.showName || '', Validators.required]
     });
     this.permissionsArray.push(permissionGroup);
     
-    if (!data) { // Solo paginar al final si es un permiso nuevo manual
+    if (!data) { 
+      // Si es manual, vamos a la última página para ver el nuevo registro
       setTimeout(() => this.currentPage.set(this.totalPages - 1));
     }
   }
@@ -121,9 +131,12 @@ export class FeatureForm implements OnInit {
   removePermission(index: number) {
     if (this.permissionsArray.length > 1) {
       this.permissionsArray.removeAt(index);
+      // Ajustar página si el elemento borrado deja la página actual vacía
       if (this.currentPage() >= this.totalPages) {
         this.currentPage.set(Math.max(0, this.totalPages - 1));
       }
+    } else {
+      this.alert.error('La feature debe tener al menos un permiso asociado.');
     }
   }
 
@@ -137,22 +150,26 @@ export class FeatureForm implements OnInit {
   onIconSelected(icon: string) {
     this.form.get('icon')?.setValue(icon);
     this.showIconPicker = false;
+    this.form.markAsDirty();
   }
 
   save() {
     if (this.form.invalid) {
-      this.alert.error('Por favor, completa todos los campos requeridos');
+      this.form.markAllAsTouched();
+      this.alert.error('Por favor, revisa los campos obligatorios.');
       return;
     }
 
-    const { permissions, ...featureData } = this.form.value;
+    // Usamos getRawValue por si hay campos deshabilitados
+    const { permissions, ...featureData } = this.form.getRawValue();
 
     this.security.saveFeatureWithPermissions(featureData, permissions).subscribe({
-      next: () => {
-        this.alert.success(this.isEditMode ? 'Actualizado correctamente' : 'Guardado correctamente');
+      next: (res) => {
+        // Asumiendo que el facade maneja el isSuccess internamente o devuelve el objeto
+        this.alert.toast(this.isEditMode ? 'Feature actualizada' : 'Feature creada con éxito');
         this.router.navigate(['/security']);
       },
-      error: (err) => this.alert.error('Error: ' + err.message)
+      error: (err) => this.alert.error('Error al procesar: ' + err.message)
     });
   }
 }
