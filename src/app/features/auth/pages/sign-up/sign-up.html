@@ -39,16 +39,14 @@
                         admin_panel_settings
                     </span>
 
-                    <select formControlName="roleId" class="w-full bg-slate-900/50 border border-slate-700 text-white pl-12 pr-10 py-3.5 rounded-2xl 
-                   outline-none transition-all duration-300 appearance-none backdrop-blur-md
-                   focus:border-indigo-500 focus:bg-slate-900 focus:shadow-[0_0_15px_rgba(79,70,229,0.1)]
-                   disabled:opacity-50 cursor-pointer">
+                    <select formControlName="roleId"
+                        class="w-full bg-slate-900/50 border border-slate-700 text-white pl-12 pr-10 py-3.5 rounded-2xl outline-none transition-all duration-300 appearance-none backdrop-blur-md focus:border-indigo-500 focus:bg-slate-900 focus:shadow-[0_0_15px_rgba(79,70,229,0.1)] disabled:opacity-50 cursor-pointer">
 
                         <option [value]="null" disabled class="bg-slate-900 text-slate-500">Selecciona un rol</option>
 
                         @for (role of roles(); track role.id) {
                         <option [value]="role.id" class="bg-slate-900 text-white">
-                            {{ role.name }}
+                            {{ role.showName }}
                         </option>
                         }
                     </select>
