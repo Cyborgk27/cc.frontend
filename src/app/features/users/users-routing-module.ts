@@ -13,14 +13,23 @@ const routes: Routes = [
   {
     path: 'list-user',
     component: ListUser,
+    data: { 
+      breadcrumb: 'Listado de Usuarios' 
+    }
   },
   {
     path: 'new-user',
     component: NewUser,
+    data: { 
+      breadcrumb: 'Nuevo Usuario' 
+    }
   },
   {
     path: 'edit-user/:id',
     component: EditUser,
+    data: { 
+      breadcrumb: 'Editar Usuario' 
+    }
   },
 ];
 

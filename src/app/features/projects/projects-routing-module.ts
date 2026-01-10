@@ -13,14 +13,23 @@ const routes: Routes = [
   {
     path: 'list-project',
     component: ListProject,
+    data: { 
+      breadcrumb: 'Listado de Proyectos' 
+    }
   },
   {
     path: 'new-project',
     component: NewProject,
+    data: {
+      breadcrumb: 'Nuevo Proyecto'
+    }
   },
   {
     path: 'edit-project/:id',
     component: EditProject,
+    data: {
+      breadcrumb: 'Editar Proyecto'
+    }
   },
 ];
 

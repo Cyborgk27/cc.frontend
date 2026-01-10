@@ -14,22 +14,37 @@ const routes: Routes = [
   {
     path: 'list-security',
     component: ListSecurity,
+    data: { 
+      breadcrumb: 'Gestión de Seguridad' 
+    }
   },
   {
     path: 'new-security',
     component: NewSecurity,
+    data: { 
+      breadcrumb: 'Nuevo Rol' 
+    }
   },
   {
     path: 'edit-security/:id',
     component: EditSecurity,
+    data: { 
+      breadcrumb: 'Editar Rol' 
+    }
   },
   {
     path: 'new-feature',
-    component: FeatureForm, // Asegúrate de importar este componente
+    component: FeatureForm,
+    data: { 
+      breadcrumb: 'Nuevo Módulo' 
+    }
   },
   {
     path: 'edit-feature/:id',
     component: FeatureForm,
+    data: { 
+      breadcrumb: 'Editar Módulo' 
+    }
   },
 ];
 

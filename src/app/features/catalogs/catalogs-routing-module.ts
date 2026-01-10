@@ -13,14 +13,23 @@ const routes: Routes = [
   {
     path: 'list-catalog',
     component: ListCatalog,
+    data: { 
+      breadcrumb: 'Listado de Catálogos' 
+    }
   },
   {
     path: 'new-catalog',
     component: NewCatalog,
+    data: { 
+      breadcrumb: 'Nuevo Catálogo' 
+    }
   },
   {
     path: 'edit-catalog/:id',
     component: EditCatalog,
+    data: { 
+      breadcrumb: 'Editar Catálogo' 
+    }
   },
 ];
 
