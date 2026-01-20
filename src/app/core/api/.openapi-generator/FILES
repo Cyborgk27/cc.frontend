@@ -5,6 +5,7 @@ api.module.ts
 api/api.ts
 api/auth.service.ts
 api/catalog.service.ts
+api/dashboard.service.ts
 api/externalCatalogs.service.ts
 api/feature.service.ts
 api/project.service.ts
