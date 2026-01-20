@@ -1,1 +1,96 @@
-<p>dashboard works!</p>
+<div class="p-8 animate-in fade-in duration-700">
+
+    <header class="mb-10 flex justify-between items-end">
+        <div>
+            <h1 class="text-4xl font-black text-white tracking-tight">Dashboard</h1>
+            <p class="text-slate-400 mt-1">Resumen general de CC API</p>
+        </div>
+        <div class="text-right hidden sm:block">
+            <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">Estado del Sistema</p>
+            <p class="text-emerald-400 text-sm font-medium flex items-center justify-end gap-2">
+                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span> Operativo
+            </p>
+        </div>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+
+        <div
+            class="bg-slate-900/50 border border-slate-800 p-8 rounded-[2.5rem] backdrop-blur-xl relative overflow-hidden group hover:border-indigo-500/50 transition-colors">
+            <div class="relative z-10">
+                <span class="material-icons text-indigo-500 mb-4 bg-indigo-500/10 p-3 rounded-2xl">rocket_launch</span>
+                <p class="text-slate-500 text-xs font-bold uppercase tracking-widest">Proyectos Activos</p>
+                <h3 class="text-5xl font-black text-white mt-2">{{ stats()?.activeProjects || 0 }}</h3>
+            </div>
+        </div>
+
+        <div
+            class="bg-slate-900/50 border border-slate-800 p-8 rounded-[2.5rem] backdrop-blur-xl relative overflow-hidden group hover:border-amber-500/50 transition-colors">
+            <div class="relative z-10">
+                <span class="material-icons text-amber-500 mb-4 bg-amber-500/10 p-3 rounded-2xl">vpn_key</span>
+                <p class="text-slate-500 text-xs font-bold uppercase tracking-widest">API Keys Generadas</p>
+                <h3 class="text-5xl font-black text-white mt-2">{{ stats()?.totalApiKeys || 0 }}</h3>
+            </div>
+        </div>
+
+        <div
+            class="bg-slate-900/50 border border-slate-800 p-8 rounded-[2.5rem] backdrop-blur-xl relative overflow-hidden group hover:border-emerald-500/50 transition-colors">
+            <div class="relative z-10">
+                <span class="material-icons text-emerald-500 mb-4 bg-emerald-500/10 p-3 rounded-2xl">inventory_2</span>
+                <p class="text-slate-500 text-xs font-bold uppercase tracking-widest">Total Catálogos</p>
+                <h3 class="text-5xl font-black text-white mt-2">{{ stats()?.totalAssignedCatalogs || 0 }}</h3>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <div class="lg:col-span-1 bg-slate-900/50 border border-slate-800 rounded-[2.5rem] p-8">
+            <h3 class="text-xl font-bold text-white mb-8">Actividad Reciente</h3>
+            <div class="space-y-6">
+                @for (item of stats()?.recentActivity; track item.date) {
+                <div class="flex gap-4 group">
+                    <div class="flex flex-col items-center">
+                        <div
+                            class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 group-hover:border-indigo-500 transition-colors">
+                            <span class="material-icons text-indigo-400 text-sm">history</span>
+                        </div>
+                        <div class="w-[2px] h-full bg-slate-800 mt-2"></div>
+                    </div>
+                    <div class="pb-6">
+                        <p class="text-slate-200 font-medium leading-tight">{{ item.entityName }}</p>
+                        <p class="text-slate-500 text-xs mt-1">{{ item.action }} • {{ item.date | date:'short' }}</p>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+
+        <div
+            class="lg:col-span-2 bg-slate-900/50 border border-slate-800 rounded-[2.5rem] p-8 overflow-hidden relative">
+            <h3 class="text-xl font-bold text-white mb-8">Distribución de Catálogos</h3>
+
+            <div class="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                @for (project of stats()?.catalogsPerProject; track project.projectName) {
+                @if (project.catalogCount > 0) {
+                <div class="flex items-center justify-between p-4 bg-slate-800/30 rounded-2xl border border-white/5">
+                    <span class="text-slate-300 font-medium truncate max-w-[70%]">{{ project.projectName }}</span>
+                    <span class="px-4 py-1 bg-indigo-500/20 text-indigo-400 rounded-full text-xs font-bold">
+                        {{ project.catalogCount }} Items
+                    </span>
+                </div>
+                }
+                }
+            </div>
+
+            @if (stats()?.totalAssignedCatalogs === 0) {
+            <div class="h-full flex flex-col items-center justify-center text-slate-600">
+                <span class="material-icons text-6xl mb-4 opacity-20">bar_chart</span>
+                <p>No hay datos de distribución disponibles</p>
+            </div>
+            }
+        </div>
+
+    </div>
+</div>
