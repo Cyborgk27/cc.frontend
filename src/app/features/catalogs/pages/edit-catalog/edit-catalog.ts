@@ -37,9 +37,18 @@ export class EditCatalog {
   }
 
   handleUpdate(catalog: CatalogDto) {
-  // Exactamente igual que el create, la Facade detecta el ID y usa el PUT
-  this.catalogFacade.save(catalog).subscribe(res => {
-    if (res.isSuccess) this.router.navigate(['/catalogs']);
-  });
-}
+    // Exactamente igual que el create, la Facade detecta el ID y usa el PUT
+    this.catalogFacade.save(catalog).subscribe(res => {
+      if (res.isSuccess) this.router.navigate(['/catalogs']);
+    });
+  }
+
+  handleCreateChild(childData: CatalogDto) {
+    this.catalogFacade.save(childData).subscribe(res => {
+      if (res.isSuccess) {
+        // Esto recarga la página por completo
+        window.location.reload();
+      }
+    });
+  }
 }

@@ -50,9 +50,10 @@ export class CatalogForm implements OnInit {
   private initChildForm() {
     this.childForm = this.fb.group({
       id: [null],
-      parentId: [{ value: this.initialData?.id, disabled: true }, Validators.required],
-      name: ['', [Validators.required]],
+      parentId: [this.initialData?.id, Validators.required],
+      name: ['', [Validators.required]], // Mantenemos 'name' como identificador técnico
       showName: ['', [Validators.required]],
+      abbreviation: ['', [Validators.required]],
       value: [''],
       isActive: [true],
       isParent: [false]
@@ -75,16 +76,18 @@ export class CatalogForm implements OnInit {
 
   saveChild() {
     if (this.childForm.invalid) return;
-    
+
     // getRawValue incluye el parentId aunque esté disabled
     const childData = this.childForm.getRawValue();
+
     this.onCreateChild.emit(childData);
-    
+
     // Reset para crear el siguiente hijo de inmediato
-    this.childForm.reset({
-      parentId: this.initialData?.id,
-      isActive: true,
-      isParent: false
+    this.childForm.patchValue({
+      name: '',
+      showName: '',
+      abbreviation: '',
+      value: ''
     });
   }
 

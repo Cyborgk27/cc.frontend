@@ -147,17 +147,26 @@
         <form [formGroup]="childForm" class="p-8 grid grid-cols-2 gap-5">
             
             <div class="col-span-2 bg-slate-950/50 p-4 rounded-2xl border border-slate-800 mb-2">
-                <label class="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mb-1">ID del Padre (Bloqueado)</label>
+                <label class="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mb-1">ID del Padre (Vinculado)</label>
                 <div class="text-emerald-400 font-mono text-sm flex items-center gap-2">
-                    <span class="material-icons text-xs">lock</span>
+                    <span class="material-icons text-xs">link</span>
                     {{ initialData?.id }}
                 </div>
             </div>
 
             <app-form-input 
                 class="col-span-2"
+                formControlName="abbreviation" 
+                label="Abreviación (Requerido)" 
+                placeholder="Ej: OPC01" 
+                icon="short_text"
+                [error]="getErrorMessage('abbreviation', childForm)">
+            </app-form-input>
+
+            <app-form-input 
+                class="col-span-2"
                 formControlName="name" 
-                label="Identificador Técnico" 
+                label="Identificador Técnico (Name)" 
                 placeholder="EJ: OPC_01" 
                 icon="terminal"
                 [error]="getErrorMessage('name', childForm)">
@@ -193,7 +202,7 @@
                 </button>
                 <button type="button" (click)="saveChild()" [disabled]="childForm.invalid"
                     class="flex-1 px-6 py-4 bg-emerald-600 text-white rounded-2xl font-bold uppercase text-xs tracking-[0.2em] shadow-lg shadow-emerald-900/40 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-30">
-                    Crear y Continuar
+                    Crear Hijo
                 </button>
             </div>
         </form>

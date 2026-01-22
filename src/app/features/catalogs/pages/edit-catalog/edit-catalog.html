@@ -9,7 +9,12 @@
     </div>
 
     @if (catalogToEdit()) {
-    <app-catalog-form [initialData]="catalogToEdit()" [parentCatalogs]="parents()" (onSave)="handleUpdate($event)">
+    <app-catalog-form 
+        [initialData]="catalogToEdit()" 
+        [parentCatalogs]="parents()" 
+        (onSave)="handleUpdate($event)" 
+        (onCreateChild)="handleCreateChild($event)"
+    >
     </app-catalog-form>
     } @else {
     <div class="flex justify-center py-20">
