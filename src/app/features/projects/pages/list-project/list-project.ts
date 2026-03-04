@@ -79,7 +79,7 @@ export class ListProject implements OnInit {
   deleteProject(project: any) {
     // Aquí iría tu lógica de borrado
     this.alert.confirm('¿Estás seguro de que deseas eliminar este proyecto?').then(confirmed => {
-      if (confirmed && project.isActive == false) {
+      if (confirmed && project.isActive == true) {
         this.projectFacade.delete(project.id).subscribe({
           next: () => {
             this.alert.success('Proyecto eliminado correctamente.');
