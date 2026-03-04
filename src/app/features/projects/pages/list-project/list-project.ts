@@ -28,7 +28,7 @@ export class ListProject implements OnInit {
   public columns: TableColumn[] = [
     { key: 'showName', label: 'Proyecto' },
     { key: 'name', label: 'Código' },
-    { key: 'isDeleted', label: 'Estado', type: 'boolean' },
+    { key: 'isActive', label: 'Estado', type: 'boolean' },
     { key: 'description', label: 'Descripción' }
   ];
 
@@ -79,7 +79,7 @@ export class ListProject implements OnInit {
   deleteProject(project: any) {
     // Aquí iría tu lógica de borrado
     this.alert.confirm('¿Estás seguro de que deseas eliminar este proyecto?').then(confirmed => {
-      if (confirmed && project.isActive == true) {
+      if (confirmed && project.isActive == false) {
         this.projectFacade.delete(project.id).subscribe({
           next: () => {
             this.alert.success('Proyecto eliminado correctamente.');
@@ -89,6 +89,8 @@ export class ListProject implements OnInit {
             this.alert.error('Error al eliminar el proyecto.');
           }
         });
+      }else{
+        this.alert.error('No se puede eliminar un proyecto activo. Por favor, inactiva el proyecto antes de eliminarlo.');
       }
     });
   }

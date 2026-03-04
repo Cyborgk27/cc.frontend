@@ -1,6 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { ApiProjectsGetRequestParams, ProjectDto, ProjectService } from '../api';
+import { ApiProjectsGetRequestParams, ProjectService } from '../api';
 import { finalize, tap } from 'rxjs';
+import { ProjectDto } from './../api/model/projectDto';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,7 @@ export class ProjectFacade {
   /**
    * Obtiene la lista de proyectos con soporte para paginación y filtros.
    */
-  public fetchAll(params: ApiProjectsGetRequestParams = { page: 0, size: 10 }) {
+  public fetchAll(params: ApiProjectsGetRequestParams = { page: 1, size: 10 }) {
     this.isLoading.set(true);
     this.projectService
       .apiProjectsGet(params)
@@ -26,6 +27,9 @@ export class ProjectFacade {
         tap((res) => {
           // Asumiendo que la API devuelve { data: [], total: number } o similar
           if (res.isSuccess) {
+            res.data.forEach((element: ProjectDto) => {
+              element.isActive = element.isActive == false? true : false
+            });
             this.projects.set(res.data);
             this.totalRecords.set(res.totalCount || res.data.length);
           }
