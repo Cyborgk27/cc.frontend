@@ -6,6 +6,7 @@ import { TableColumn } from '../../../../shared/interfaces/table-column.interfac
 import { TableAction } from '../../../../shared/interfaces/table-action.interface';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 import { AuthState } from '../../../../core/services/auth-state';
+import { Alert } from '../../../../core/services/ui/alert';
 
 @Component({
   selector: 'app-list-catalog',
@@ -17,6 +18,7 @@ export class ListCatalog implements OnInit {
   private router = inject(Router);
   public catalogFacade = inject(CatalogFacade);
   public auth = inject(AuthState); // Servicio de permisos
+  private alert = inject(Alert);
 
   // Exponemos las constantes para usarlas en el HTML
   public readonly PERMS = PERMISSIONS;
@@ -49,7 +51,7 @@ export class ListCatalog implements OnInit {
       tooltip: 'Editar Catálogo',
       colorClass: 'text-indigo-400',
       permission: PERMISSIONS.CATALOGS.UPDATE, // 'CATALOGS_UPDATE'
-      callback: (row: any) => this.router.navigate(['/catalogs/edit-catalog', row.id])
+      callback: (row: any) => this.goToEditCatalog(row)
     },
     {
       icon: 'delete',
@@ -92,5 +94,13 @@ export class ListCatalog implements OnInit {
   // Método auxiliar para navegación si lo necesitas fuera de la tabla
   goToCatalogForm() {
     this.router.navigate(['/catalogs/new-catalog']);
+  }
+
+  goToEditCatalog(catalog: any) {
+    if(catalog.isDeleted === false) {
+      this.router.navigate(['/catalogs/edit-catalog', catalog.id]);
+    }else{
+      this.alert.error('El catalogo se encuentra eliminado');
+    }
   }
 }
