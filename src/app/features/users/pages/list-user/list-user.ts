@@ -22,6 +22,7 @@ export class ListUser implements OnInit {
 
   public columns: TableColumn[] = [
     { key: 'email', label: 'Correo', type: 'text', class: 'font-mono text-indigo-400' },
+    { key: 'userName', label: 'Usuario', type: 'text', class: 'font-mono text-indigo-400' },
     { key: 'firstName', label: 'Nombre', type: 'text' },
     { key: 'lastName', label: 'Apellido', type: 'text' },
     { key: 'isDeleted', label: 'Estado', type: 'boolean' }
