@@ -66,6 +66,19 @@ export class ProjectFacade {
     );
   }
 
+  public delete(id: string) {
+    this.isLoading.set(true);
+    return this.projectService.apiProjectsIdDelete({ id }).pipe(
+      finalize(() => this.isLoading.set(false)),
+      tap((res) => {
+        if (res.isSuccess) {
+          // Refrescar la lista local si es necesario
+          this.fetchAll();
+        }
+      })
+    );
+  }
+
   /**
    * Limpia el proyecto seleccionado (útil al entrar a "Nuevo Proyecto").
    */

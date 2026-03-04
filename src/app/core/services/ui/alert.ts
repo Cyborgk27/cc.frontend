@@ -49,4 +49,16 @@ export class Alert {
     });
     return Toast.fire({ icon, title: message });
   }
+
+  confirm(message: string, title: string = '¿Estás seguro?') {
+    return Swal.fire({
+      ...this.darkTheme,
+      title,
+      text: message,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, confirmar',
+      cancelButtonText: 'Cancelar',
+    });
+  }
 }
