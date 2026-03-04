@@ -21,7 +21,7 @@ export class SignIn {
   public isLoading = signal(false);
 
   public loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    username: ['', [Validators.required]],
     password: ['', [Validators.required]]
   });
 
@@ -32,7 +32,6 @@ export class SignIn {
     const control = this.loginForm.get(controlName);
     if (!control || !control.touched || !control.errors) return '';
     if (control.errors['required']) return 'Este campo es obligatorio';
-    if (control.errors['email']) return 'Formato de correo inválido';
     return '';
   }
 
@@ -47,7 +46,7 @@ export class SignIn {
     // Ajustamos a la estructura que pide el AuthService generado
     const requestParams: ApiAuthLoginPostRequestParams = {
       loginRequest: {
-        email: this.loginForm.value.email ?? '',
+        email: this.loginForm.value.username ?? '',
         password: this.loginForm.value.password ?? ''
       }
     };

@@ -18,12 +18,12 @@
 
             <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-5 mt-8">
                 <app-form-input 
-                    formControlName="email" 
-                    type="email" 
-                    label="Correo Electrónico"
-                    placeholder="correo@ejemplo.com" 
-                    icon="alternate_email" 
-                    [error]="getErrorMessage('email')">
+                    formControlName="username" 
+                    type="text" 
+                    label="Nombre de usuario"
+                    placeholder="username2001" 
+                    icon="person" 
+                    [error]="getErrorMessage('username')">
                 </app-form-input>
 
                 <app-form-input 
