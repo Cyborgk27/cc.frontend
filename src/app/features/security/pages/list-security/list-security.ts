@@ -74,13 +74,6 @@ export class ListSecurity implements OnInit {
       permission: PERMISSIONS.SECURITY.DELETE,
       callback: (role: RoleDto) => this.deleteRole(role)
     },
-    {
-      icon: 'visibility',
-      tooltip: 'Ver Detalles',
-      colorClass: 'text-slate-400',
-      permission: PERMISSIONS.SECURITY.READ,
-      callback: (role: RoleDto) => console.log('Detalles de:', role.showName)
-    }
   ];
 
   ngOnInit() {

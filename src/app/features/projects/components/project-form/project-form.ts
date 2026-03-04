@@ -74,6 +74,7 @@ export class ProjectForm implements OnInit {
           this.isEditMode = true;
           this.projectFacade.getById(id).subscribe(projRes => {
             if (projRes.isSuccess) {
+              projRes.data.isActive = projRes.data.isActive==true?false : true; // Aseguramos que el checkbox refleje el estado real del proyecto
               this.patchProject(projRes.data);
               this.syncCatalogs(allCatalogs, projRes.data.catalogIds || []);
             }
