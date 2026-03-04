@@ -68,7 +68,7 @@ export class ListUser implements OnInit {
   handleActivate(user: any) {
     const isDeleted = user.isDeleted;
 
-    if (!isDeleted) {
+    if (isDeleted) {
       this.userFacade.activate(user.id).subscribe(res => {
         this.loadUsers(); // Refresca la lista después de activar
         this.alert.success('Usuario activado exitosamente')
