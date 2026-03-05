@@ -1,9 +1,8 @@
 import { Component, inject, OnInit, effect, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService, ApiAuthRegisterPostRequestParams, RoleDto } from '../../../../core/api';
-import { Alert } from '../../../../core/services/ui/alert';
-import { SecurityFacade } from '../../../../core/services/security-facade';
+import { ApiAuthRegisterPostRequestParams, AuthService } from '../../../core/api';
+import { Alert } from '../../../core/services/ui/alert';
 
 @Component({
   selector: 'app-sign-up',

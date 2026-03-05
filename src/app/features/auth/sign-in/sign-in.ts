@@ -1,9 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
-import { AuthService, ApiAuthLoginPostRequestParams } from '../../../../core/api'; // Usamos el Params interface
 import { FormBuilder, Validators } from '@angular/forms';
-import { Alert } from '../../../../core/services/ui/alert';
 import { Router } from '@angular/router';
-import { AuthState } from '../../../../core/services/auth-state';
+import { ApiAuthLoginPostRequestParams, AuthService } from '../../../core/api'; // Usamos el Params interface
+import { AuthState } from '../../../core/services/auth-state';
+import { Alert } from '../../../core/services/ui/alert';
 
 @Component({
   selector: 'app-sign-in',
