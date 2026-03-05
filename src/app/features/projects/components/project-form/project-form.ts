@@ -170,6 +170,12 @@ export class ProjectForm implements OnInit {
       // Lógica para Soft Delete si el backend lo requiere
       control.patchValue({ isDeleted: true });
       // O simplemente removemos del array y dejamos que el backend maneje la diferencia
+
+      this.alert.confirm('¿Deseas eliminar esta API Key? Esta acción no se puede deshacer.').then(confirmed => {
+        if (confirmed) {
+          this.projectFacade.deleteApiKey(control.value.id).subscribe();
+        }
+      });
       this.apiKeysArray.removeAt(index);
     }
     this.form.markAsDirty();
