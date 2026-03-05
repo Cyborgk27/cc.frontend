@@ -69,7 +69,7 @@ export class ListProject implements OnInit {
     if(!project) {
       this.router.navigate(['/projects/new-project']);
     }
-    else if (project.isActive == true) {
+    else if (project.isActive == false) {
       this.alert.error('No se puede editar un proyecto inactivo. Por favor, active el proyecto antes de editarlo.');
     } else if(project) {
       this.router.navigate(['/projects/edit-project', project.id]);
