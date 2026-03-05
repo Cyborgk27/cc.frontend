@@ -50,7 +50,10 @@ export class AuthState {
     }
 
     return this._userService.apiAuthRefreshTokenPost({
-      refreshTokenRequest: { refreshToken: currentSession.refreshToken }
+      refreshTokenRequest: { 
+        refreshToken: currentSession.refreshToken, 
+        token: currentSession.token
+      }
     }).pipe(
       map(res => {
         if (res.isSuccess && res.data) {
