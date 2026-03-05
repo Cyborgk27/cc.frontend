@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { AuthState } from '../../../../core/services/auth-state';
 
 @Component({
@@ -8,13 +8,14 @@ import { AuthState } from '../../../../core/services/auth-state';
   styleUrl: './sidenav.css',
 })
 export class Sidenav {
-  private authState = inject(AuthState);
-  // Obtenemos la navegación que vino en el JSON del login
-  public menu = this.authState.navigation;
+private authState = inject(AuthState);
+  
+  // Creamos una señal computada que reacciona a cambios en authState.session
+  public menu = computed(() => this.authState.session()?.navigation || []);
 
-  isCollapsed = signal(false)
+  isCollapsed = signal(false);
 
   toggleSidenav() {
-    this.isCollapsed.update(value => !value)
+    this.isCollapsed.update(value => !value);
   }
 }

@@ -16,15 +16,16 @@ import { environment } from '../environments/environment.development';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ApiModule.forRoot(() => {
-      return new Configuration({
-        basePath: environment.urlAddress,
-      });
-    }),
+    ApiModule,
     SharedModule
   ],
   providers: [
-    provideBrowserGlobalErrorListeners(),
+    {
+      provide: Configuration,
+      useFactory: () => new Configuration({
+        basePath: environment.urlAddress,
+      })
+    },
     provideHttpClient(
       withInterceptors([
         authInterceptor,

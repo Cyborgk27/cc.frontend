@@ -9,12 +9,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { SharedModule } from '../../shared/shared-module';
 import { SignUp } from './sign-up/sign-up';
+import { ApiModule } from '../../core/api';
 
 
 @NgModule({
   declarations: [
     SignIn,
-    SignUp
+    SignUp,
   ],
   imports: [
     CommonModule,
@@ -24,7 +25,8 @@ import { SignUp } from './sign-up/sign-up';
     MatInputModule,
     MatButtonModule,
     MatCardModule,
-    SharedModule
+    SharedModule,
+    // ApiModule
   ]
 })
 export class AuthModule { }

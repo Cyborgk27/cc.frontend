@@ -8,7 +8,7 @@ RUN npm install
 
 # Copiar el resto del código y generar el dist
 COPY . .
-RUN npm run build --configuration=development
+RUN npm run build --configuration=production
 
 # Etapa 2: Serve (Producción)
 FROM nginx:stable-alpine
