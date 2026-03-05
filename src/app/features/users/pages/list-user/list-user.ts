@@ -53,7 +53,16 @@ export class ListUser implements OnInit {
         callback: (user: any) => this.handleActivate(user)
         // Nota: Si el componente genérico no soporta 'condition', 
         // el botón se verá siempre a menos que se filtre en el HTML del genérico.
-      }
+      },
+      {
+        icon: 'delete',
+        tooltip: 'Desactivar Usuario',
+        colorClass: 'text-rose-500 hover:bg-rose-500/10',
+        permission: this.permissions.USERS.DELETE, // 'USERS_DEACTIVATE'
+        callback: (user: any) => this.handleDeactivate(user)
+        // Nota: Si el componente genérico no soporta 'condition', 
+        // el botón se verá siempre a menos que se filtre en el HTML del genérico.
+      },
     ];
   }
 
@@ -90,5 +99,22 @@ export class ListUser implements OnInit {
 
   handleCreate() {
     this.router.navigate(['/users/new-user']);
+  }
+
+  handleDeactivate(user: any) {
+    const isDeleted = user.isDeleted;
+
+    if (!isDeleted) {
+      this.alert.confirm('¿Estás seguro de que deseas desactivar este usuario?').then(confirmed => {
+        if (confirmed) {
+          this.userFacade.desactivate(user.id).subscribe(res => {
+            this.loadUsers(); // Refresca la lista después de desactivar
+            this.alert.success('Usuario desactivado exitosamente')
+          });
+        }
+      });
+    } else {
+      this.alert.error('El usuario ya está desactivado');
+    }
   }
 }

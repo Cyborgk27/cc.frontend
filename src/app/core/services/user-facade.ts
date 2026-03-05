@@ -83,6 +83,19 @@ export class UserFacade {
     );
   }
 
+  desactivate(userId: string) {
+    this._loading.set(true);
+    return this._api.apiUsersDeactivateUserIdPatch({ userId }).pipe(
+      tap(res => {
+        if (res.isSuccess) {
+          // Refrescamos la lista para ver el cambio de estado
+          this.fetchAll().subscribe();
+        }
+      }),
+      finalize(() => this._loading.set(false))
+    );
+  }
+
   /**
    * Limpia el estado de usuarios si es necesario
    */
