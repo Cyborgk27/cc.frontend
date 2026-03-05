@@ -66,6 +66,7 @@ export class CatalogForm implements OnInit {
 
     if(this.isEdit==true) {
       this.form.get('name')?.disable(); // Bloqueamos el parentId en modo edición
+      this.form.get('isParent')?.disable(); // Bloqueamos isParent en modo edición
     }
   }
 
