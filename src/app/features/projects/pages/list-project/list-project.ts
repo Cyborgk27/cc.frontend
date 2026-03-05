@@ -78,19 +78,19 @@ export class ListProject implements OnInit {
 
   deleteProject(project: any) {
     // Aquí iría tu lógica de borrado
-    this.alert.confirm('¿Estás seguro de que deseas eliminar este proyecto?').then(confirmed => {
+    this.alert.confirm('¿Estás seguro de que deseas inactivar este proyecto?').then(confirmed => {
       if (confirmed && project.isActive == true) {
         this.projectFacade.delete(project.id).subscribe({
           next: () => {
-            this.alert.success('Proyecto eliminado correctamente.');
+            this.alert.success('Proyecto inactivado correctamente.');
             this.loadData();
           },
           error: () => {
-            this.alert.error('Error al eliminar el proyecto.');
+            this.alert.error('Error al inactivar el proyecto.');
           }
         });
       }else{
-        this.alert.error('No se puede eliminar un proyecto activo. Por favor, inactiva el proyecto antes de eliminarlo.');
+        this.alert.error('No se puede inactivar este proyecto');
       }
     });
   }

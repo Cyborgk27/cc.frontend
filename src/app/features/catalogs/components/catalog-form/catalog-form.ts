@@ -71,7 +71,7 @@ export class CatalogForm implements OnInit {
 
   deleteChild(row: any): void {
     if(row.isActive) {
-      this.alert.confirm('¿Deseas eliminar este catálogo hijo? Esta acción no se puede deshacer.').then(confirmed => {
+      this.alert.confirm('¿Deseas inactivar este catálogo hijo? Esta acción no se puede deshacer.').then(confirmed => {
         if (confirmed) {
           this.catalogFacade.delete(row.id).subscribe(() => {
             window.location.reload();

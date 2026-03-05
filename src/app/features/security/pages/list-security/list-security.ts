@@ -67,13 +67,13 @@ export class ListSecurity implements OnInit {
       permission: PERMISSIONS.SECURITY.UPDATE,
       callback: (role: RoleDto) => this.goToRoleForm(role)
     },
-    {
-      icon: 'delete_outline',
-      tooltip: 'Eliminar Rol',
-      colorClass: 'text-rose-400',
-      permission: PERMISSIONS.SECURITY.DELETE,
-      callback: (role: RoleDto) => this.deleteRole(role)
-    },
+    // {
+    //   icon: 'delete_outline',
+    //   tooltip: 'Eliminar Rol',
+    //   colorClass: 'text-rose-400',
+    //   permission: PERMISSIONS.SECURITY.DELETE,
+    //   callback: (role: RoleDto) => this.deleteRole(role)
+    // },
   ];
 
   ngOnInit() {
