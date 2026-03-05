@@ -183,7 +183,7 @@ export class ProjectForm implements OnInit {
 
   save() {
     if (this.form.invalid) {
-      this.form.markAllAsTouched();
+      // this.form.markAllAsTouched();
       this.alert.error('Por favor, completa los campos requeridos', 'Formulario incompleto');
       return;
     }
