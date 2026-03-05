@@ -126,6 +126,10 @@ export class SecurityFacade {
         // Si no hay permisos que guardar, terminamos aquí
         if (!permissions || permissions.length === 0) return of(res);
 
+        permissions.forEach(x => {
+          x.featureId =feature.id ?? 0
+        })
+
         // Si hay permisos, creamos un array de observables para guardarlos todos en paralelo
         const permissionRequests = permissions.map(perm => {
           // Importante: Si tus permisos necesitan el ID de la feature recién creada, 
