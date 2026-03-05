@@ -24,6 +24,7 @@ export class SignUp implements OnInit {
     this.signUpForm = this.fb.group({
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
+      username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       roleId: [{ value: null, disabled: true }, [Validators.required]]
@@ -74,7 +75,7 @@ export class SignUp implements OnInit {
         firstName: formValues.firstName,
         lastName: formValues.lastName,
         email: formValues.email,
-        userName: formValues.email,
+        userName: formValues.username,
         password: formValues.password,
         roleId: formValues.roleId // <--- Ahora sí tendrá el ID del rol
       }
