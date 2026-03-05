@@ -87,8 +87,18 @@ export class ListCatalog implements OnInit {
   }
 
   deleteCatalog(row: any) {
-    // Implementar lógica de borrado aquí
-    console.log('Eliminando catálogo:', row);
+    this.alert.confirm('¿Estás seguro de que deseas eliminar este catálogo?').then(confirmed => {
+      if (confirmed && row.isDeleted === false) {
+        this.catalogFacade.delete(row.id).subscribe({
+          next: () => {
+            this.alert.success('Catálogo eliminado correctamente.');
+          },
+          error: () => {
+            this.alert.error('Error al eliminar el catálogo. Inténtalo de nuevo.');
+          }
+        });
+      }
+    });
   }
 
   // Método auxiliar para navegación si lo necesitas fuera de la tabla

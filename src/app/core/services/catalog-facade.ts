@@ -77,11 +77,9 @@ export class CatalogFacade {
    * El servicio actual no tiene DELETE mapeado según el código enviado.
    * Lo dejamos comentado para futura implementación.
    */
-  /*
   delete(id: number) {
     return this._api.apiCatalogsIdDelete({ id }).pipe(
       tap(res => res.isSuccess && this.fetchAll().subscribe())
     );
   }
-  */
 }
