@@ -2,6 +2,10 @@ import { Component, EventEmitter, Input, OnInit, Output, inject, signal } from '
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CatalogDto } from '../../../../core/api';
 import { TableColumn } from '../../../../shared/interfaces/table-column.interface';
+import { TableAction } from '../../../../shared/interfaces/table-action.interface';
+import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
+import { CatalogFacade } from '../../../../core/services/catalog-facade';
+import { Alert } from '../../../../core/services/ui/alert';
 
 @Component({
   selector: 'app-catalog-form',
@@ -11,6 +15,8 @@ import { TableColumn } from '../../../../shared/interfaces/table-column.interfac
 })
 export class CatalogForm implements OnInit {
   private fb = inject(FormBuilder);
+  private catalogFacade = inject(CatalogFacade);
+  private alert = inject(Alert);
 
   @Input() initialData?: CatalogDto;
   @Input() parentCatalogs: CatalogDto[] = [];
@@ -27,6 +33,16 @@ export class CatalogForm implements OnInit {
     { key: 'value', label: 'Valor' },
     { key: 'isActive', label: 'Estado' }
   ];
+
+  public actions: TableAction[] = [
+    {
+      icon: 'delete',
+      tooltip: 'Eliminar',
+      colorClass: 'text-rose-500',
+      permission: PERMISSIONS.CATALOGS.DELETE, // 'CATALOGS_DELETE'
+      callback: (row: any) => this.deleteChild(row)
+    }
+  ]
 
   public form: FormGroup = this.fb.group({
     id: [null],
@@ -45,6 +61,18 @@ export class CatalogForm implements OnInit {
       this.form.patchValue(this.initialData);
     }
     this.initChildForm();
+  }
+
+  deleteChild(row: any): void {
+    if(row.isActive) {
+      this.alert.confirm('¿Deseas eliminar este catálogo hijo? Esta acción no se puede deshacer.').then(confirmed => {
+        if (confirmed) {
+          this.catalogFacade.delete(row.id).subscribe(() => {
+            window.location.reload();
+          });
+        }
+      });
+    }
   }
 
   private initChildForm() {
