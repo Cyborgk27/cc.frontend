@@ -26,6 +26,7 @@ export class CatalogForm implements OnInit {
   // Estado del Modal de Hijos
   public showChildModal = signal(false);
   public childForm!: FormGroup;
+  private isEdit: boolean = false;
 
   public childColumns: TableColumn[] = [
     { key: 'name', label: 'ID Técnico', class: 'font-mono text-xs text-indigo-300' },
@@ -59,8 +60,13 @@ export class CatalogForm implements OnInit {
   ngOnInit(): void {
     if (this.initialData) {
       this.form.patchValue(this.initialData);
+      this.isEdit = true;
     }
     this.initChildForm();
+
+    if(this.isEdit==true) {
+      this.form.get('name')?.disable(); // Bloqueamos el parentId en modo edición
+    }
   }
 
   deleteChild(row: any): void {
