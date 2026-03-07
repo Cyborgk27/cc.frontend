@@ -2,14 +2,14 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { ApiAuthLoginPostRequestParams, ApiAuthRefreshTokenPostRequestParams, AuthService } from '../api';
 import { IBaseResponse, ILoginResponse } from './interfaces/base-response.interface';
 import { Router } from '@angular/router';
-import { Alert } from './ui/alert';
+import { AlertService } from './ui/alert';
 import { catchError, map, Observable, of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthState {
   private _userService = inject(AuthService);
   private _router = inject(Router);
-  private alert = inject(Alert);
+  private alert = inject(AlertService);
 
   // 1. Fuente de verdad única
   private _session = signal<ILoginResponse | null>(this.getStoredSession());

@@ -2,10 +2,10 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { SecurityFacade } from '../../../../core/services/security-facade';
 import { FeatureDto, RoleDto } from '../../../../core/api';
-import { TableAction } from '../../../../shared/interfaces/table-action.interface';
-import { Alert } from '../../../../core/services/ui/alert';
 import { AuthState } from '../../../../core/services/auth-state';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
+import { IGridAction } from '../../../../shared/interfaces/table-action.interface';
+import { AlertService } from '../../../../core/services/ui/alert';
 
 @Component({
   selector: 'app-list-security',
@@ -18,7 +18,7 @@ export class ListSecurity implements OnInit {
   public security = inject(SecurityFacade);
   public auth = inject(AuthState); // Inyectamos para el control de permisos
   private router = inject(Router);
-  private alert = inject(Alert);
+  private alert = inject(AlertService);
 
   // Exponemos las constantes al template
   public readonly PERMS = PERMISSIONS;
@@ -27,7 +27,7 @@ export class ListSecurity implements OnInit {
   public activeTab = signal<'roles' | 'features'>('roles');
 
   // --- CONFIGURACIÓN DE COLUMNAS ---
-  
+
   public roleColumns = [
     { key: 'name', label: 'Código Técnico' },
     { key: 'showName', label: 'Nombre Visual' },
@@ -42,38 +42,31 @@ export class ListSecurity implements OnInit {
 
   // --- CONFIGURACIÓN DE ACCIONES PROTEGIDAS ---
 
-  public featureActions: TableAction[] = [
+  public featureActions: IGridAction<FeatureDto>[] = [
     {
       icon: 'edit',
-      tooltip: 'Editar Funcionalidad',
+      label: 'Editar Funcionalidad',
       colorClass: 'text-indigo-400',
       permission: PERMISSIONS.SECURITY.UPDATE, // 'SECURITY_UPDATE'
       callback: (feature: FeatureDto) => this.goToFeatureForm(feature.id?.toString())
     },
     {
       icon: 'delete',
-      tooltip: 'Eliminar',
+      label: 'Eliminar',
       colorClass: 'text-rose-500',
       permission: PERMISSIONS.SECURITY.DELETE, // 'SECURITY_DELETE'
       callback: (feature: FeatureDto) => this.deleteFeature(feature)
     }
   ];
 
-  public roleActions: TableAction[] = [
+  public roleActions: IGridAction<RoleDto>[] = [
     {
       icon: 'edit_note',
-      tooltip: 'Editar Configuración',
+      label: 'Editar Configuración',
       colorClass: 'text-indigo-400',
       permission: PERMISSIONS.SECURITY.UPDATE,
       callback: (role: RoleDto) => this.goToRoleForm(role)
     },
-    // {
-    //   icon: 'delete_outline',
-    //   tooltip: 'Eliminar Rol',
-    //   colorClass: 'text-rose-400',
-    //   permission: PERMISSIONS.SECURITY.DELETE,
-    //   callback: (role: RoleDto) => this.deleteRole(role)
-    // },
   ];
 
   ngOnInit() {
@@ -100,15 +93,28 @@ export class ListSecurity implements OnInit {
 
   // --- MÉTODOS DE ACCIÓN ---
 
-  deleteRole(role: RoleDto) {
-    if (confirm(`¿Estás seguro de eliminar el rol "${role.showName}"?`)) {
-      this.alert.success('Rol eliminado (Simulado)');
+  async deleteRole(role: RoleDto) {
+    const confirmed = await this.alert.confirm(
+      `¿Estás seguro de eliminar el rol "${role.showName}"?`,
+      'Confirmar eliminación'
+    );
+
+    if (confirmed) {
+      // Aquí iría tu llamada al Facade/Service:
+      // this.roleFacade.delete(role.id).subscribe(...)
+      this.alert.success(`El rol "${role.showName}" ha sido eliminado`, 'Eliminado');
     }
   }
 
-  deleteFeature(feature: FeatureDto): void {
-    if (confirm(`¿Eliminar la funcionalidad "${feature.showName}" y todos sus permisos asociados?`)) {
-      this.alert.success('Funcionalidad eliminada (Simulado)');
+  async deleteFeature(feature: FeatureDto): Promise<void> {
+    const confirmed = await this.alert.confirm(
+      `¿Eliminar la funcionalidad "${feature.showName}" y todos sus permisos asociados?`,
+      'Atención: Acción irreversible'
+    );
+
+    if (confirmed) {
+      // Simulación de lógica de borrado
+      this.alert.success('Funcionalidad y permisos eliminados correctamente');
     }
   }
 }

@@ -1,39 +1,48 @@
 import { Injectable } from '@angular/core';
-import Swal, { SweetAlertIcon } from 'sweetalert2';
+import Swal, { SweetAlertIcon, SweetAlertResult } from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root',
 })
-export class Alert {
-  // Configuración base para modo oscuro
-  private darkTheme = {
-    background: '#1e293b', // bg-slate-800 de Tailwind
-    color: '#f8fafc',      // text-slate-50
-    confirmButtonColor: '#6366f1', // Indigo-500
-    cancelButtonColor: '#475569',  // Slate-600
+export class AlertService {
+  // Configuración base centralizada
+  private readonly darkTheme = {
+    background: '#1e293b',
+    color: '#f8fafc',
+    confirmButtonColor: '#6366f1',
+    cancelButtonColor: '#475569',
+    heightAuto: false, // Evita saltos de scroll en Angular
   };
 
-  success(message: string, title: string = '¡Éxito!') {
+  /**
+   * Muestra una alerta de éxito
+   */
+  success(message: string, title: string = '¡Éxito!'): Promise<SweetAlertResult> {
     return Swal.fire({
       ...this.darkTheme,
-      title,
-      text: message,
       icon: 'success',
-    });
-  }
-
-  error(message: string, title: string = 'Error') {
-    return Swal.fire({
-      ...this.darkTheme,
       title,
       text: message,
-      icon: 'error',
-      confirmButtonColor: '#ef4444', // Red-500 para errores
     });
   }
 
-  // Toast oscuro para notificaciones rápidas de la API
-  toast(message: string, icon: SweetAlertIcon = 'success') {
+  /**
+   * Muestra una alerta de error
+   */
+  error(message: string, title: string = 'Error'): Promise<SweetAlertResult> {
+    return Swal.fire({
+      ...this.darkTheme,
+      icon: 'error',
+      title,
+      text: message,
+      confirmButtonColor: '#ef4444',
+    });
+  }
+
+  /**
+   * Toast para notificaciones rápidas
+   */
+  toast(message: string, icon: SweetAlertIcon = 'success'): void {
     const Toast = Swal.mixin({
       ...this.darkTheme,
       toast: true,
@@ -41,24 +50,30 @@ export class Alert {
       showConfirmButton: false,
       timer: 3000,
       timerProgressBar: true,
-      // Estilo extra para el toast oscuro
       didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer);
-        toast.addEventListener('mouseleave', Swal.resumeTimer);
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
       }
     });
-    return Toast.fire({ icon, title: message });
+    Toast.fire({ icon, title: message });
   }
 
-  confirm(message: string, title: string = '¿Estás seguro?') {
-    return Swal.fire({
+  /**
+   * Confirmación de acción. 
+   * IMPORTANTE: Retorna la promesa para usar .then() o await
+   */
+  async confirm(message: string, title: string = '¿Estás seguro?'): Promise<boolean> {
+    const result = await Swal.fire({
       ...this.darkTheme,
+      icon: 'warning',
       title,
       text: message,
-      icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, confirmar',
       cancelButtonText: 'Cancelar',
+      reverseButtons: true, // Pone el botón de cancelar a la izquierda (estándar UX)
     });
+
+    return result.isConfirmed; // Retornamos solo el booleano para simplificar el componente
   }
 }

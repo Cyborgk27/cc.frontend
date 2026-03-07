@@ -1,11 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { TableAction } from '../../../../shared/interfaces/table-action.interface';
 import { TableColumn } from '../../../../shared/interfaces/table-column.interface';
 import { ProjectFacade } from '../../../../core/services/project-facade';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 import { AuthState } from '../../../../core/services/auth-state';
-import { Alert } from '../../../../core/services/ui/alert';
+import { AlertService } from '../../../../core/services/ui/alert';
+import { IGridAction } from '../../../../shared/interfaces/table-action.interface';
+import { ProjectDto } from '../../../../core/api';
 
 @Component({
   selector: 'app-list-project',
@@ -17,7 +18,7 @@ export class ListProject implements OnInit {
   private router = inject(Router);
   public projectFacade = inject(ProjectFacade);
   public auth = inject(AuthState); // Inyectamos el estado de autenticación
-  private alert = inject(Alert);
+  private alert = inject(AlertService);
 
   // Exponemos las constantes al template
   public readonly PERMS = PERMISSIONS;
@@ -32,20 +33,20 @@ export class ListProject implements OnInit {
     { key: 'description', label: 'Descripción' }
   ];
 
-  public projectActions: TableAction[] = [
+  public projectActions: IGridAction<ProjectDto>[] = [
     {
       icon: 'edit',
-      tooltip: 'Editar Proyecto',
+      label: 'Editar Proyecto',
       colorClass: 'text-indigo-400',
       permission: PERMISSIONS.PROJECTS.UPDATE, // 'PROJECT_UPDATE'
-      callback: (project: any) => this.goToProjectForm(project)
+      callback: (project: ProjectDto) => this.goToProjectForm(project)
     },
     {
       icon: 'delete',
-      tooltip: 'Eliminar Proyecto',
+      label: 'Eliminar Proyecto',
       colorClass: 'text-rose-400',
       permission: PERMISSIONS.PROJECTS.DELETE, // 'PROJECT_DELETE'
-      callback: (project: any) => this.deleteProject(project)
+      callback: (project: ProjectDto) => this.deleteProject(project)
     }
   ];
 
@@ -65,7 +66,7 @@ export class ListProject implements OnInit {
     this.loadData();
   }
 
-  goToProjectForm(project?: any) {
+  goToProjectForm(project?: ProjectDto) {
     if(!project) {
       this.router.navigate(['/projects/new-project']);
     }
@@ -76,22 +77,33 @@ export class ListProject implements OnInit {
     }
   }
 
-  deleteProject(project: any) {
-    // Aquí iría tu lógica de borrado
-    this.alert.confirm('¿Estás seguro de que deseas inactivar este proyecto?').then(confirmed => {
-      if (confirmed && project.isActive == true) {
-        this.projectFacade.delete(project.id).subscribe({
-          next: () => {
-            this.alert.success('Proyecto inactivado correctamente.');
-            this.loadData();
-          },
-          error: () => {
-            this.alert.error('Error al inactivar el proyecto.');
-          }
-        });
-      }else{
-        this.alert.error('No se puede inactivar este proyecto');
-      }
-    });
+async deleteProject(project: ProjectDto) {
+  // 1. Validación previa de negocio (Guard Clause)
+  // Si el proyecto ya está inactivo o no tiene ID, avisamos de inmediato.
+  if (!project.isActive || !project.id) {
+    this.alert.error('Este proyecto ya se encuentra inactivo o no es válido');
+    return;
   }
+
+  // 2. Confirmación asíncrona
+  const confirmed = await this.alert.confirm(
+    `¿Estás seguro de que deseas inactivar el proyecto "${project.name}"?`,
+    'Confirmar Inactivación'
+  );
+
+  // 3. Si cancela, salimos en silencio (sin errores falsos)
+  if (!confirmed) return;
+
+  // 4. Ejecución de la lógica
+  this.projectFacade.delete(project.id).subscribe({
+    next: () => {
+      this.alert.toast('Proyecto inactivado correctamente');
+      this.loadData();
+    },
+    error: (err) => {
+      this.alert.error('No se pudo inactivar el proyecto en este momento');
+      console.error('Delete Project Error:', err);
+    }
+  });
+}
 }

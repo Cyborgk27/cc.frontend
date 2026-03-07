@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Alert } from '../../../../core/services/ui/alert';
+import { AlertService } from '../../../../core/services/ui/alert';
 import { ProjectFacade } from '../../../../core/services/project-facade';
 import { CatalogFacade } from '../../../../core/services/catalog-facade';
 import { ProjectDto, CatalogDto } from '../../../../core/api';
@@ -17,7 +17,7 @@ export class ProjectForm implements OnInit {
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private alert = inject(Alert);
+  private alert = inject(AlertService);
   
   public projectFacade = inject(ProjectFacade);
   public catalogFacade = inject(CatalogFacade);

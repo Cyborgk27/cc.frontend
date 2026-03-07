@@ -62,11 +62,11 @@
                         @if (actions && actions.length > 0) {
                         <td class="px-6 py-4 text-right">
                             <div class="flex justify-end gap-1">
-                                @for (action of actions; track action.tooltip) {
+                                @for (action of actions; track action.label) {
                                     @if (!action.permission || auth.hasPermission(action.permission)) {
                                     <button (click)="action.callback(row)"
                                         class="p-2 rounded-xl transition-all hover:bg-slate-700/50 text-slate-400 hover:text-white {{ action.colorClass }}"
-                                        [title]="action.tooltip">
+                                        [title]="action.label">
                                         <span class="material-icons text-[20px]">{{ action.icon }}</span>
                                     </button>
                                     }
