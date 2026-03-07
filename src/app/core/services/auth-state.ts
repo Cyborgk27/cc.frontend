@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { ApiAuthLoginPostRequestParams, AuthService } from '../api';
+import { ApiAuthLoginPostRequestParams, ApiAuthRefreshTokenPostRequestParams, AuthService } from '../api';
 import { IBaseResponse, ILoginResponse } from './interfaces/base-response.interface';
 import { Router } from '@angular/router';
 import { Alert } from './ui/alert';
@@ -49,12 +49,13 @@ export class AuthState {
       return of(null);
     }
 
-    return this._userService.apiAuthRefreshTokenPost({
-      refreshTokenRequest: { 
-        refreshToken: currentSession.refreshToken, 
-        token: currentSession.token
+    var request: ApiAuthRefreshTokenPostRequestParams = {
+      refreshTokenRequest: {
+        refreshToken: currentSession.refreshToken
       }
-    }).pipe(
+    };
+
+    return this._userService.apiAuthRefreshTokenPost(request).pipe(
       map(res => {
         if (res.isSuccess && res.data) {
           this.setSession(res.data);
@@ -63,7 +64,7 @@ export class AuthState {
         throw new Error('Refresh failed');
       }),
       catchError(() => {
-        this.handleAuthError();
+        // this.handleAuthError();
         return of(null);
       })
     );

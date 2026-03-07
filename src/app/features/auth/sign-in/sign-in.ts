@@ -36,7 +36,7 @@ export class SignIn {
     // Ajustamos a la estructura que pide el AuthService generado
     const requestParams: ApiAuthLoginPostRequestParams = {
       loginRequest: {
-        email: this.loginForm.value.username ?? '',
+        username: this.loginForm.value.username ?? '',
         password: this.loginForm.value.password ?? ''
       }
     };
