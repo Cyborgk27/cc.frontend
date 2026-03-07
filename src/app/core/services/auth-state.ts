@@ -64,7 +64,7 @@ export class AuthState {
         throw new Error('Refresh failed');
       }),
       catchError(() => {
-        // this.handleAuthError();
+        this.handleAuthError();
         return of(null);
       })
     );
@@ -73,6 +73,7 @@ export class AuthState {
   private handleAuthError() {
     this.alert.error('Sesión expirada. Por favor, inicia sesión nuevamente.');
     this.logout();
+    this._router.navigate(['/sign-in']);
   }
 
   private getStoredSession(): ILoginResponse | null {

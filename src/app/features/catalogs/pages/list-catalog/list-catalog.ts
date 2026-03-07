@@ -39,10 +39,10 @@ export class ListCatalog implements OnInit {
       class: 'text-slate-500'
     },
     {
-      key: 'isDeleted',
+      key: 'isActive',
       label: 'Estado',
       type: 'boolean'
-    }
+    },
   ];
 
   public actions: IGridAction<CatalogDto>[] = [
@@ -86,19 +86,27 @@ export class ListCatalog implements OnInit {
     this.loadData();
   }
 
-  deleteCatalog(row: CatalogDto) {
-    this.alert.confirm('¿Estás seguro de que deseas inactivar este catálogo?').then(isConfirmed => {
-      if (isConfirmed && row.isDeleted === false && row.id != null && typeof row.id === 'number') {
-        this.catalogFacade.delete(row.id).subscribe({
-          next: () => {
-            this.alert.success('Catálogo inactivado correctamente.');
-          },
-          error: () => {
-            this.alert.error('Error al inactivar el catálogo. Inténtalo de nuevo.');
-          }
-        });
-      }
-    });
+  async deleteCatalog(row: CatalogDto) {
+    const isDeleted = row.isDeleted === true;
+
+    if (isDeleted) {
+      this.alert.error(`El catálogo "${row.name} - ${row.showName}" esta inactivo.`);
+      return;
+    }
+
+    const confirmed = await this.alert.confirm('¿Estás seguro de que deseas eliminar este catálogo?');
+
+    if (confirmed && row.id != null && typeof row.id === 'number') {
+      this.catalogFacade.delete(row.id).subscribe({
+        next: () => {
+          this.alert.success('Catálogo eliminado correctamente.');
+          this.loadData();
+        },
+        error: () => {
+          this.alert.error('Error al eliminar el catálogo. Inténtalo de nuevo.');
+        }
+      });
+    }
   }
 
   // Método auxiliar para navegación si lo necesitas fuera de la tabla
