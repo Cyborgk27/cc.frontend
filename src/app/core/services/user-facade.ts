@@ -52,9 +52,12 @@ export class UserFacade {
         registerRequest: {
           id: user.id,
           userName: user.userName,
+          lastName: user.lastName,
+          firstName: user.firstName,
           email: user.email,
           roleId: user.roleId,
-          // No incluimos password aquí porque en el update no es obligatorio y no queremos sobreescribirlo si viene vacío
+          password: user.password || undefined,
+          confirmPassword: user.password || undefined,
         }
       };
       return this._api.apiUsersUpdatePut(params).pipe(
