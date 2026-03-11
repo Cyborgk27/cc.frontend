@@ -50,7 +50,8 @@ export class ListUser implements OnInit {
         label: 'Activar Usuario',
         colorClass: 'text-emerald-500 hover:bg-emerald-500/10',
         permission: this.permissions.USERS.UPDATE, // 'USERS_ACTIVATE'
-        callback: (user: UserDto) => this.handleActivate(user)
+        callback: (user: UserDto) => this.handleActivate(user),
+        hidden: (user: UserDto) => !user.isDeleted,
         // Nota: Si el componente genérico no soporta 'condition', 
         // el botón se verá siempre a menos que se filtre en el HTML del genérico.
       },
@@ -119,13 +120,15 @@ export class ListUser implements OnInit {
 
     // 4. Ejecutar la acción
     this.userFacade.desactivate(user.id).subscribe({
-      next: () => {
-        this.loadUsers();
-        this.alert.toast('Usuario desactivado exitosamente'); // Toast es más fluido para esto
+      next: (res) => {
+        this.alert.showResponse(res);
+        if (res.isSuccess) {
+          this.loadUsers(); // Refresca la lista después de desactivar
+        }
       },
-      error: (err) => {
-        this.alert.error('Hubo un error al intentar desactivar el usuario');
-        console.error(err);
+      error: (res) => {
+        this.alert.error(res.error.message || 'Ocurrió un error al desactivar el usuario');
+        console.error(res);
       }
     });
   }
