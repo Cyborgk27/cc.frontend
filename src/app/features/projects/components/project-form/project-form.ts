@@ -18,7 +18,7 @@ export class ProjectForm implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private alert = inject(AlertService);
-  
+
   public projectFacade = inject(ProjectFacade);
   public catalogFacade = inject(CatalogFacade);
 
@@ -64,7 +64,7 @@ export class ProjectForm implements OnInit {
 
   private checkRoute() {
     const id = this.route.snapshot.params['id'];
-    
+
     // Primero cargamos todos los catálogos disponibles en el sistema
     this.catalogFacade.fetchAll().subscribe(res => {
       if (res.isSuccess) {
@@ -74,14 +74,14 @@ export class ProjectForm implements OnInit {
           this.isEditMode = true;
           this.projectFacade.getById(id).subscribe(projRes => {
             if (projRes.isSuccess) {
-              projRes.data.isActive = projRes.data.isActive==true?false : true; // Aseguramos que el checkbox refleje el estado real del proyecto
+              projRes.data.isActive = projRes.data.isActive == true ? false : true; // Aseguramos que el checkbox refleje el estado real del proyecto
               this.patchProject(projRes.data);
               this.syncCatalogs(allCatalogs, projRes.data.catalogIds || []);
             }
           });
         } else {
           this.availableCatalogs.set(allCatalogs);
-          this.addApiKey(); 
+          this.addApiKey();
         }
       }
     });
@@ -91,7 +91,7 @@ export class ProjectForm implements OnInit {
     // Aseguramos que los IDs sean comparables (string vs string)
     const selected = all.filter(c => assignedIds.some(id => String(id) === String(c.id)));
     const available = all.filter(c => !assignedIds.some(id => String(id) === String(c.id)));
-    
+
     this.selectedCatalogs.set(selected);
     this.availableCatalogs.set(available);
   }
@@ -113,7 +113,7 @@ export class ProjectForm implements OnInit {
   }
 
   // --- LÓGICA DRAG & DROP ---
-  
+
   public drop(event: CdkDragDrop<CatalogDto[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -125,7 +125,7 @@ export class ProjectForm implements OnInit {
         event.currentIndex
       );
     }
-    
+
     // Sincronizar el Form con la señal de seleccionados
     const newIds = this.selectedCatalogs().map(c => c.id);
     this.form.get('catalogIds')?.setValue(newIds);
@@ -194,7 +194,8 @@ export class ProjectForm implements OnInit {
     this.projectFacade.save(projectData).subscribe({
       next: (res) => {
         if (res.isSuccess) {
-          this.alert.toast(this.isEditMode ? 'Proyecto actualizado' : 'Proyecto creado');
+          // this.alert.toast(this.isEditMode ? 'Proyecto actualizado' : 'Proyecto creado');
+          this.alert.showResponse(res);
           this.router.navigate(['/projects']);
         } else {
           this.alert.error(res.message || 'Ocurrió un error inesperado');
@@ -205,5 +206,12 @@ export class ProjectForm implements OnInit {
         this.alert.error(msg, 'Error al guardar');
       }
     });
+  }
+
+  // En project-form.ts
+  toggleActive() {
+    const control = this.form.get('isActive');
+    control?.setValue(!control.value);
+    this.form.markAsDirty();
   }
 }

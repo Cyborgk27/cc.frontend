@@ -4,16 +4,13 @@
       <h2 class="text-3xl font-bold text-white tracking-tight">
         {{ isEditMode ? 'Editar Proyecto' : 'Nuevo Proyecto' }}
       </h2>
-      <p class="text-slate-400 text-sm mt-1">
-        Gestiona la identidad, seguridad y catálogos de la instancia.
-      </p>
+      <p class="text-slate-400 text-sm mt-1">Gestiona la identidad y seguridad de la instancia.</p>
     </div>
     @if (isEditMode && form.get('isActive')?.value) {
       <span
         class="px-4 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-bold rounded-full border border-emerald-500/20 tracking-widest uppercase"
+        >Proyecto Activo</span
       >
-        Proyecto Activo
-      </span>
     }
   </div>
 
@@ -23,11 +20,7 @@
     <button
       type="button"
       (click)="activeTab.set('general')"
-      [class]="
-        activeTab() === 'general'
-          ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
-          : 'text-slate-400 hover:bg-slate-800/50'
-      "
+      [class]="activeTab() === 'general' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400'"
       class="px-6 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 text-sm"
     >
       <span class="material-icons text-sm">info</span> Datos Generales
@@ -35,11 +28,7 @@
     <button
       type="button"
       (click)="activeTab.set('keys')"
-      [class]="
-        activeTab() === 'keys'
-          ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
-          : 'text-slate-400 hover:bg-slate-800/50'
-      "
+      [class]="activeTab() === 'keys' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400'"
       class="px-6 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 text-sm"
     >
       <span class="material-icons text-sm">vpn_key</span> API Keys
@@ -47,11 +36,7 @@
     <button
       type="button"
       (click)="activeTab.set('catalogs')"
-      [class]="
-        activeTab() === 'catalogs'
-          ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
-          : 'text-slate-400 hover:bg-slate-800/50'
-      "
+      [class]="activeTab() === 'catalogs' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400'"
       class="px-6 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 text-sm"
     >
       <span class="material-icons text-sm">library_books</span> Catálogos
@@ -61,241 +46,80 @@
   <form [formGroup]="form" class="space-y-8">
     @if (activeTab() === 'general') {
       <div
-        class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-800/20 p-8 rounded-3xl border border-slate-700/30 animate-in slide-in-from-bottom-4 duration-300 backdrop-blur-sm"
+        class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-800/20 p-8 rounded-3xl border border-slate-700/30 animate-in slide-in-from-bottom-4 duration-300"
       >
         <app-form-input
           formControlName="name"
-          label="Código Técnico (Name)"
-          placeholder="ej: bvg-prod"
+          label="Código Técnico"
           icon="terminal"
           [error]="getErrorMessage('name')"
-        >
-        </app-form-input>
-
+        ></app-form-input>
         <app-form-input
           formControlName="showName"
-          label="Nombre Visual (ShowName)"
-          placeholder="ej: Bolsa de Valores"
+          label="Nombre Visual"
           icon="badge"
           [error]="getErrorMessage('showName')"
-        >
-        </app-form-input>
+        ></app-form-input>
 
         <div class="md:col-span-2 space-y-2">
-          <label class="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.2em] ml-1"
+          <label class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest ml-1"
             >Descripción</label
           >
           <textarea
             formControlName="description"
             rows="3"
-            class="w-full bg-slate-900/50 border border-slate-700 text-white p-4 rounded-2xl focus:border-indigo-500 outline-none transition-all resize-none placeholder:text-slate-600"
-            placeholder="Detalles adicionales del proyecto..."
+            class="w-full bg-slate-900/50 border border-slate-700 text-white p-4 rounded-2xl focus:border-indigo-500 outline-none transition-all resize-none"
           ></textarea>
-        </div>
-
-        <div
-          class="flex items-center gap-4 p-5 bg-slate-950/40 rounded-2xl border border-slate-700/30 w-fit group cursor-pointer"
-          (click)="form.get('isActive')?.setValue(!form.get('isActive')?.value)"
-        >
-          <div
-            class="relative w-11 h-6 rounded-full transition-all duration-300"
-            [class]="
-              form.get('isActive')?.value
-                ? 'bg-indigo-600 shadow-[0_0_15px_rgba(79,70,229,0.4)]'
-                : 'bg-slate-700'
-            "
-          >
-            <div
-              class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-all duration-300"
-              [style.transform]="form.get('isActive')?.value ? 'translateX(20px)' : 'translateX(0)'"
-            ></div>
-          </div>
-          <span
-            class="text-xs font-bold text-slate-400 group-hover:text-white transition-colors uppercase tracking-widest"
-          >
-            Estado del Proyecto
-          </span>
         </div>
       </div>
     }
 
     @if (activeTab() === 'keys') {
-      <div class="space-y-6 animate-in slide-in-from-bottom-4 duration-300">
-        <div
-          class="flex justify-between items-center bg-slate-900/60 p-6 rounded-3xl border border-slate-700/50 backdrop-blur-md"
-        >
-          <div class="flex items-center gap-4">
-            <div class="p-3 bg-indigo-500/10 rounded-2xl text-indigo-400">
-              <span class="material-icons">security</span>
-            </div>
-            <div>
-              <h3 class="text-white font-bold">Credenciales de Acceso</h3>
-              <p class="text-xs text-slate-500">Genera llaves únicas para integración externa.</p>
-            </div>
-          </div>
-          <button
-            type="button"
-            (click)="addApiKey()"
-            class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 shadow-lg shadow-indigo-900/40"
-          >
-            <span class="material-icons text-sm">add_moderator</span> Generar Nueva Key
-          </button>
-        </div>
-
-        <div formArrayName="apiKeys" class="grid grid-cols-1 gap-4">
-          @for (keyGroup of apiKeysArray.controls; track $index) {
-            <div
-              [formGroupName]="$index"
-              class="bg-slate-800/30 p-8 rounded-3xl border border-slate-700/50 relative group hover:border-indigo-500/30 transition-all backdrop-blur-sm"
-            >
-              <button
-                type="button"
-                (click)="removeApiKey($index)"
-                class="absolute top-6 right-6 text-slate-600 hover:text-rose-500 transition-colors"
-              >
-                <span class="material-icons text-xl">delete_sweep</span>
-              </button>
-
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <app-form-input
-                  formControlName="title"
-                  label="Etiqueta"
-                  placeholder="ej: Web Frontend"
-                  icon="label"
-                  [error]="getErrorMessage('title')"
-                ></app-form-input>
-                <app-form-input
-                  formControlName="allowedDomain"
-                  label="Dominio"
-                  placeholder="https://..."
-                  icon="language"
-                ></app-form-input>
-                <app-form-input
-                  type="date"
-                  formControlName="expirationDate"
-                  label="Expiración"
-                  icon="event"
-                ></app-form-input>
-
-                <div class="md:col-span-3">
-                  <label
-                    class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest ml-1"
-                    >Token de Acceso (Secret Key)</label
-                  >
-                  <div class="mt-2 flex gap-2">
-                    <input
-                      formControlName="key"
-                      readonly
-                      class="w-full bg-slate-950/80 border border-slate-800 text-emerald-400/80 p-3 rounded-xl text-xs font-mono outline-none italic"
-                    />
-                    <button
-                      type="button"
-                      class="bg-slate-900 p-3 rounded-xl text-slate-500 hover:text-white border border-slate-800"
-                    >
-                      <span class="material-icons text-sm">content_copy</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          }
-        </div>
-      </div>
+      <app-project-keys
+        [parentForm]="form"
+        [apiKeysArray]="apiKeysArray"
+        (onAdd)="addApiKey()"
+        (onRemove)="removeApiKey($event)"
+      >
+      </app-project-keys>
     }
 
     @if (activeTab() === 'catalogs') {
-      <div class="space-y-6 animate-in slide-in-from-bottom-4 duration-300">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8" cdkDropListGroup>
-          <div class="space-y-4">
-            <div class="flex justify-between items-center px-2">
-              <label class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]"
-                >Disponibles</label
-              >
-              <span
-                class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-md font-mono"
-                >{{ availableCatalogs().length }}</span
-              >
-            </div>
-            <div
-              cdkDropList
-              [cdkDropListData]="availableCatalogs()"
-              (cdkDropListDropped)="drop($event)"
-              class="min-h-[400px] bg-slate-900/30 border-2 border-dashed border-slate-800 rounded-3xl p-4 transition-all"
-            >
-              @for (cat of availableCatalogs(); track cat.id) {
-                <div
-                  cdkDrag
-                  class="flex items-center justify-between bg-slate-800/80 border border-slate-700/50 p-4 rounded-2xl mb-3 cursor-move hover:border-indigo-500/50 transition-all backdrop-blur-sm shadow-xl"
-                >
-                  <div class="flex items-center gap-3">
-                    <span class="material-icons text-slate-600">drag_indicator</span>
-                    <div>
-                      <p class="text-white text-sm font-bold">{{ cat.showName }}</p>
-                      <p class="text-[10px] text-slate-500 font-mono">{{ cat.name }}</p>
-                    </div>
-                  </div>
-                </div>
-              }
-            </div>
-          </div>
-
-          <div class="space-y-4">
-            <div class="flex justify-between items-center px-2">
-              <label class="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.2em]"
-                >Activos en Proyecto</label
-              >
-              <span
-                class="text-[10px] bg-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded-md font-mono"
-                >{{ selectedCatalogs().length }}</span
-              >
-            </div>
-            <div
-              cdkDropList
-              [cdkDropListData]="selectedCatalogs()"
-              (cdkDropListDropped)="drop($event)"
-              class="min-h-[400px] bg-indigo-600/5 border-2 border-indigo-500/20 rounded-3xl p-4"
-            >
-              @for (cat of selectedCatalogs(); track cat.id) {
-                <div
-                  cdkDrag
-                  class="flex items-center justify-between bg-indigo-600/20 border border-indigo-500/30 p-4 rounded-2xl mb-3 cursor-move hover:bg-indigo-600/40 transition-all shadow-lg shadow-indigo-900/20"
-                >
-                  <div class="flex items-center gap-3">
-                    <span class="material-icons text-indigo-400">verified</span>
-                    <div>
-                      <p class="text-white text-sm font-bold">{{ cat.showName }}</p>
-                      <p class="text-[10px] text-indigo-300/60 font-mono">{{ cat.name }}</p>
-                    </div>
-                  </div>
-                </div>
-              }
-            </div>
-          </div>
-        </div>
-      </div>
+      <app-project-catalogs
+        [available]="availableCatalogs"
+        [selected]="selectedCatalogs"
+        (onDrop)="drop($event)"
+      >
+      </app-project-catalogs>
     }
 
     <div class="flex justify-end pt-8 border-t border-slate-800/50 gap-4">
       <button
         type="button"
         routerLink="/projects"
-        class="px-8 py-3 text-slate-400 hover:text-rose-400 transition-colors font-bold text-xs uppercase tracking-widest"
+        class="px-8 py-3 text-slate-400 font-bold text-xs uppercase tracking-widest"
       >
         Cancelar
       </button>
       <button
         (click)="save()"
-        class="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-30 text-white px-12 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-indigo-900/30 active:scale-95 flex items-center gap-3"
+        [disabled]="projectFacade.isLoading()"
+        class="bg-indigo-600 hover:bg-indigo-500 text-white px-12 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-indigo-900/30 active:scale-95 flex items-center gap-3"
       >
-        @if (projectFacade.isLoading()) {
-          <span class="material-icons animate-spin text-sm">refresh</span>
-          <span>Guardando...</span>
-        } @else {
-          <span class="material-icons text-sm">{{
-            isEditMode ? 'published_with_changes' : 'rocket_launch'
-          }}</span>
-          <span>{{ isEditMode ? 'Guardar Cambios' : 'Lanzar Proyecto' }}</span>
-        }
+        <span class="material-icons text-sm">{{
+          projectFacade.isLoading()
+            ? 'refresh'
+            : isEditMode
+              ? 'published_with_changes'
+              : 'rocket_launch'
+        }}</span>
+        <span>{{
+          projectFacade.isLoading()
+            ? 'Guardando...'
+            : isEditMode
+              ? 'Guardar Cambios'
+              : 'Lanzar Proyecto'
+        }}</span>
       </button>
     </div>
   </form>

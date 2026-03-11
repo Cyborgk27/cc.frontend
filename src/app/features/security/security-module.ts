@@ -11,7 +11,6 @@ import { RoleForm } from './components/role-form/role-form';
 import { SharedModule } from "../../shared/shared-module";
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FeatureForm } from './components/feature-form/feature-form';
-import { ManageFeatures } from './pages/manage-features/manage-features';
 import { RoleTableComponent } from './components/role-table.component';
 import { FeatureTableComponent } from './components/feature-table.component';
 
@@ -22,7 +21,6 @@ import { FeatureTableComponent } from './components/feature-table.component';
     EditSecurity,
     RoleForm,
     FeatureForm,
-    ManageFeatures,
     RoleTableComponent,
     FeatureTableComponent
   ],
