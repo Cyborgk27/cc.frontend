@@ -71,9 +71,10 @@ export class AuthState {
   }
 
   private handleAuthError() {
-    this.alert.error('Sesión expirada. Por favor, inicia sesión nuevamente.');
+    // this.alert.error('Sesión expirada. Por favor, inicia sesión nuevamente.');
+    this.loading.set(false)
     this.logout();
-    this._router.navigate(['/sign-in']);
+    this._router.navigate(['auth/sign-in']);
   }
 
   private getStoredSession(): ILoginResponse | null {
@@ -108,12 +109,6 @@ export class AuthState {
           this.alert.error(res.message || 'Credenciales incorrectas');
         }
       },
-      error: (err) => {
-        this.loading.set(false);
-        // Manejo de errores de red o servidor
-        const errorMsg = err.error?.message || 'Error de conexión con el servidor';
-        this.alert.error(errorMsg);
-      }
     });
   }
 

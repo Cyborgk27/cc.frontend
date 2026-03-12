@@ -8,6 +8,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { SharedModule } from './shared/shared-module';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { environment } from '../environments/environment.development';
+import { errorInterceptor } from './core/interceptors/error.interceptor';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { environment } from '../environments/environment.development';
     provideHttpClient(
       withInterceptors([
         authInterceptor,
+        errorInterceptor
       ])
     ),
   ],

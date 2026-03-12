@@ -126,10 +126,6 @@ export class ListUser implements OnInit {
           this.loadUsers(); // Refresca la lista después de desactivar
         }
       },
-      error: (res) => {
-        this.alert.error(res.error.message || 'Ocurrió un error al desactivar el usuario');
-        console.error(res);
-      }
     });
   }
 }

@@ -40,7 +40,7 @@ export class AlertService {
     } else {
       const errorMsg = res.message || 'Ocurrió un error inesperado';
       const statusTitle = `Error ${res.statusCode}`;
-      this.error(errorMsg, statusTitle);
+      this.error(errorMsg, statusTitle, res.statusCodeCat);
     }
   }
 
@@ -65,12 +65,16 @@ export class AlertService {
    * @param {string} [title='Error'] Título del modal.
    * @returns {Promise<SweetAlertResult>} Promesa con el resultado de la interacción.
    */
-  public error(message: string, title: string = 'Error'): Promise<SweetAlertResult> {
+  public error(message: string, title: string = 'Error', imageUrl?: string): Promise<SweetAlertResult> {
     return Swal.fire({
       ...this.darkTheme,
-      icon: 'error',
+      icon: imageUrl ? undefined : 'error', // Si hay imagen, quitamos el icono de "X" para que no estorbe
       title,
       text: message,
+      imageUrl: imageUrl, // Aquí cargamos el gatito (https://http.cat/XXX)
+      imageWidth: 400,
+      imageHeight: 300,
+      imageAlt: `Error ${title}`,
       confirmButtonColor: '#ef4444',
     });
   }
