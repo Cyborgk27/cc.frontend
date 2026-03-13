@@ -66,7 +66,7 @@ export class ProjectForm implements OnInit {
     const id = this.route.snapshot.params['id'];
 
     // Primero cargamos todos los catálogos disponibles en el sistema
-    this.catalogFacade.fetchAll().subscribe(res => {
+    this.projectFacade.getAllCatalogs().subscribe(res => {
       if (res.isSuccess) {
         const allCatalogs = res.data;
 
