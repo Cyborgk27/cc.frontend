@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "npm run generate:api && ng serve",
-    "build": "ng build",
+    "build": "npm run generate:api && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "generate:api": "curl -k https://localhost:7174/swagger/v1/swagger.json -o swagger_temp.json && openapi-generator-cli generate -i swagger_temp.json -g typescript-angular -o src/app/core/api --additional-properties=providedInRoot=true,useSingleRequestParameter=true && del swagger_temp.json"
