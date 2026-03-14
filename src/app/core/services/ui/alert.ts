@@ -1,39 +1,92 @@
 import { Injectable } from '@angular/core';
-import Swal, { SweetAlertIcon } from 'sweetalert2';
+import Swal, { SweetAlertIcon, SweetAlertResult } from 'sweetalert2';
+import { IBaseResponse } from '../interfaces/base-response.interface';
 
+/**
+ * Servicio centralizado para el manejo de alertas y notificaciones visuales.
+ * Utiliza SweetAlert2 con una configuración de tema oscuro (Dark Mode).
+ * * @description Proporciona métodos para mostrar mensajes de éxito, error, 
+ * toasts de notificación y cuadros de diálogo de confirmación.
+ */
 @Injectable({
   providedIn: 'root',
 })
-export class Alert {
-  // Configuración base para modo oscuro
-  private darkTheme = {
-    background: '#1e293b', // bg-slate-800 de Tailwind
-    color: '#f8fafc',      // text-slate-50
-    confirmButtonColor: '#6366f1', // Indigo-500
-    cancelButtonColor: '#475569',  // Slate-600
+export class AlertService {
+  /**
+   * Configuración estética compartida para todas las alertas.
+   * @private
+   * @readonly
+   */
+  private readonly darkTheme = {
+    background: '#1e293b',
+    color: '#f8fafc',
+    confirmButtonColor: '#6366f1',
+    cancelButtonColor: '#475569',
+    heightAuto: false,
   };
 
-  success(message: string, title: string = '¡Éxito!') {
+  /**
+   * Analiza una respuesta estandarizada del backend y muestra la alerta correspondiente.
+   * Si la operación fue exitosa muestra un Toast, de lo contrario muestra un Modal de error.
+   * * @template T Tipo de dato contenido en la respuesta.
+   * @param {IBaseResponse<T>} res Objeto de respuesta que sigue la interfaz IBaseResponse.
+   * @returns {void}
+   */
+  public showResponse<T>(res: IBaseResponse<T>): void {
+    if (!res) return;
+
+    if (res.isSuccess) {
+      this.toast(res.message || 'Operación exitosa');
+    } else {
+      const errorMsg = res.message || 'Ocurrió un error inesperado';
+      const statusTitle = `Error ${res.statusCode}`;
+      this.error(errorMsg, statusTitle, res.statusCodeCat);
+    }
+  }
+
+  /**
+   * Muestra una ventana modal de éxito.
+   * * @param {string} message Contenido del mensaje.
+   * @param {string} [title='¡Éxito!'] Título de la alerta.
+   * @returns {Promise<SweetAlertResult>} Promesa con el resultado de la interacción.
+   */
+  public success(message: string, title: string = '¡Éxito!'): Promise<SweetAlertResult> {
     return Swal.fire({
       ...this.darkTheme,
-      title,
-      text: message,
       icon: 'success',
-    });
-  }
-
-  error(message: string, title: string = 'Error') {
-    return Swal.fire({
-      ...this.darkTheme,
       title,
       text: message,
-      icon: 'error',
-      confirmButtonColor: '#ef4444', // Red-500 para errores
     });
   }
 
-  // Toast oscuro para notificaciones rápidas de la API
-  toast(message: string, icon: SweetAlertIcon = 'success') {
+  /**
+   * Muestra una ventana modal de error con colores de advertencia críticos.
+   * * @param {string} message Descripción del error.
+   * @param {string} [title='Error'] Título del modal.
+   * @returns {Promise<SweetAlertResult>} Promesa con el resultado de la interacción.
+   */
+  public error(message: string, title: string = 'Error', imageUrl?: string): Promise<SweetAlertResult> {
+    return Swal.fire({
+      ...this.darkTheme,
+      icon: imageUrl ? undefined : 'error', // Si hay imagen, quitamos el icono de "X" para que no estorbe
+      title,
+      text: message,
+      imageUrl: imageUrl, // Aquí cargamos el gatito (https://http.cat/XXX)
+      imageWidth: 400,
+      imageHeight: 300,
+      imageAlt: `Error ${title}`,
+      confirmButtonColor: '#ef4444',
+    });
+  }
+
+  /**
+   * Muestra una notificación pequeña (Toast) en la esquina superior derecha.
+   * Ideal para mensajes no intrusivos que desaparecen automáticamente.
+   * * @param {string} message Mensaje a mostrar.
+   * @param {SweetAlertIcon} [icon='success'] Icono decorativo del toast.
+   * @returns {void}
+   */
+  public toast(message: string, icon: SweetAlertIcon = 'success'): void {
     const Toast = Swal.mixin({
       ...this.darkTheme,
       toast: true,
@@ -41,24 +94,34 @@ export class Alert {
       showConfirmButton: false,
       timer: 3000,
       timerProgressBar: true,
-      // Estilo extra para el toast oscuro
       didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer);
-        toast.addEventListener('mouseleave', Swal.resumeTimer);
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
       }
     });
-    return Toast.fire({ icon, title: message });
+    Toast.fire({ icon, title: message });
   }
 
-  confirm(message: string, title: string = '¿Estás seguro?') {
-    return Swal.fire({
+  /**
+   * Muestra un cuadro de diálogo interactivo para confirmar una acción del usuario.
+   * * @example
+   * const ok = await alertService.confirm('¿Borrar registro?');
+   * if (ok) { ... }
+   * * @param {string} message Pregunta o advertencia para el usuario.
+   * @param {string} [title='¿Estás seguro?'] Título del cuadro de confirmación.
+   * @returns {Promise<boolean>} Retorna true si el usuario confirmó, false si canceló.
+   */
+  public async confirm(message: string, title: string = '¿Estás seguro?'): Promise<boolean> {
+    const result = await Swal.fire({
       ...this.darkTheme,
+      icon: 'warning',
       title,
       text: message,
-      icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, confirmar',
       cancelButtonText: 'Cancelar',
+      reverseButtons: true,
     });
+    return result.isConfirmed;
   }
 }

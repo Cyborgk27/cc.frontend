@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { SecurityRoutingModule } from './security-routing-module';
 import { ListSecurity } from './pages/list-security/list-security';
 import { NewSecurity } from './pages/new-security/new-security';
@@ -12,7 +11,8 @@ import { RoleForm } from './components/role-form/role-form';
 import { SharedModule } from "../../shared/shared-module";
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FeatureForm } from './components/feature-form/feature-form';
-import { ManageFeatures } from './pages/manage-features/manage-features';
+import { RoleTableComponent } from './components/role-table.component';
+import { FeatureTableComponent } from './components/feature-table.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +21,8 @@ import { ManageFeatures } from './pages/manage-features/manage-features';
     EditSecurity,
     RoleForm,
     FeatureForm,
-    ManageFeatures,
+    RoleTableComponent,
+    FeatureTableComponent
   ],
   imports: [
     CommonModule,
@@ -31,6 +32,6 @@ import { ManageFeatures } from './pages/manage-features/manage-features';
     MatButtonModule,
     SharedModule,
     DragDropModule,
-  ]
+]
 })
 export class SecurityModule { }

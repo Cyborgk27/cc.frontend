@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ManageFeatures } from './manage-features';
+import { ListSystem } from './list-system';
 
-describe('ManageFeatures', () => {
-  let component: ManageFeatures;
-  let fixture: ComponentFixture<ManageFeatures>;
+describe('ListSystem', () => {
+  let component: ListSystem;
+  let fixture: ComponentFixture<ListSystem>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ManageFeatures]
+      declarations: [ListSystem]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ManageFeatures);
+    fixture = TestBed.createComponent(ListSystem);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

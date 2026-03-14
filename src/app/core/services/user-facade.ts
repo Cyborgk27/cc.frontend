@@ -48,7 +48,18 @@ export class UserFacade {
 
     if (user.id) {
       // Caso: UPDATE (PUT)
-      const params: ApiUsersUpdatePutRequestParams = { userDto: user };
+      const params: ApiUsersUpdatePutRequestParams = {
+        registerRequest: {
+          id: user.id,
+          userName: user.userName,
+          lastName: user.lastName,
+          firstName: user.firstName,
+          email: user.email,
+          roleId: user.roleId,
+          password: user.password || undefined,
+          confirmPassword: user.password || undefined,
+        }
+      };
       return this._api.apiUsersUpdatePut(params).pipe(
         tap(res => {
           if (res.isSuccess) this.fetchAll().subscribe();
@@ -57,7 +68,13 @@ export class UserFacade {
       );
     } else {
       // Caso: NEW (POST)
-      const params: ApiUsersSavePostRequestParams = { userDto: user };
+      const params: ApiUsersSavePostRequestParams = { registerRequest: {
+        userName: user.userName,
+        email: user.email,
+        roleId: user.roleId,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      }};
       return this._api.apiUsersSavePost(params).pipe(
         tap(res => {
           if (res.isSuccess) this.fetchAll().subscribe();

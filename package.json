@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "npm run generate:api && ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "generate:api": "openapi-generator-cli generate -i https://respectful-unity-production.up.railway.app/swagger/v1/swagger.json -g typescript-angular -o src/app/core/api --additional-properties=providedInRoot=true,useSingleRequestParameter=true"
+    "generate:api": "curl -k https://localhost:7174/swagger/v1/swagger.json -o swagger_temp.json && openapi-generator-cli generate -i swagger_temp.json -g typescript-angular -o src/app/core/api --additional-properties=providedInRoot=true,useSingleRequestParameter=true && del swagger_temp.json"
   },
   "prettier": {
     "printWidth": 100,

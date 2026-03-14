@@ -9,6 +9,8 @@ import { ProjectForm } from './components/project-form/project-form';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from "../../shared/shared-module";
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ProjectKeysComponent } from './components/project-keys.component';
+import { ProjectCatalogsComponent } from './components/project-catalogs.component';
 
 
 @NgModule({
@@ -16,7 +18,9 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     ListProject,
     NewProject,
     EditProject,
-    ProjectForm
+    ProjectForm,
+    ProjectKeysComponent,
+    ProjectCatalogsComponent
   ],
   imports: [
     CommonModule,

@@ -8,6 +8,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { SharedModule } from './shared/shared-module';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { environment } from '../environments/environment.development';
+import { errorInterceptor } from './core/interceptors/error.interceptor';
 
 @NgModule({
   declarations: [
@@ -16,18 +17,20 @@ import { environment } from '../environments/environment.development';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ApiModule.forRoot(() => {
-      return new Configuration({
-        basePath: environment.urlAddress,
-      });
-    }),
+    ApiModule,
     SharedModule
   ],
   providers: [
-    provideBrowserGlobalErrorListeners(),
+    {
+      provide: Configuration,
+      useFactory: () => new Configuration({
+        basePath: environment.urlAddress,
+      })
+    },
     provideHttpClient(
       withInterceptors([
         authInterceptor,
+        errorInterceptor
       ])
     ),
   ],

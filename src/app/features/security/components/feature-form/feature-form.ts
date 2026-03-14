@@ -2,8 +2,8 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SecurityFacade } from '../../../../core/services/security-facade';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Alert } from '../../../../core/services/ui/alert';
 import { FeatureDto, PermissionDto } from '../../../../core/api';
+import { AlertService } from '../../../../core/services/ui/alert';
 
 @Component({
   selector: 'app-feature-form',
@@ -15,7 +15,7 @@ export class FeatureForm implements OnInit {
   private fb = inject(FormBuilder);
   public security = inject(SecurityFacade);
   private router = inject(Router);
-  private alert = inject(Alert);
+  private alert = inject(AlertService);
   private route = inject(ActivatedRoute);
 
   public form!: FormGroup;
@@ -153,23 +153,33 @@ export class FeatureForm implements OnInit {
     this.form.markAsDirty();
   }
 
-  save() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.alert.error('Por favor, revisa los campos obligatorios.');
-      return;
-    }
+// 1. Añade una propiedad en tu componente para controlar el estado del botón
+public isSaving = false;
 
-    // Usamos getRawValue por si hay campos deshabilitados
-    const { permissions, ...featureData } = this.form.getRawValue();
-
-    this.security.saveFeatureWithPermissions(featureData, permissions).subscribe({
-      next: (res) => {
-        // Asumiendo que el facade maneja el isSuccess internamente o devuelve el objeto
-        this.alert.toast(this.isEditMode ? 'Feature actualizada' : 'Feature creada con éxito');
-        this.router.navigate(['/security']);
-      },
-      error: (err) => this.alert.error('Error al procesar: ' + err.message)
-    });
+save() {
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    this.alert.toast('Por favor, revisa los campos obligatorios', 'warning');
+    return;
   }
+
+  // 2. Bloqueamos el proceso para evitar duplicados (UX Pro)
+  this.isSaving = true;
+
+  // Extraemos datos usando getRawValue()
+  const { permissions, ...featureData } = this.form.getRawValue();
+
+  this.security.saveFeatureWithPermissions(featureData, permissions).subscribe({
+    next: () => {
+      const message = this.isEditMode ? 'Funcionalidad actualizada' : 'Funcionalidad creada con éxito';
+      this.alert.toast(message);
+      this.router.navigate(['/security']);
+    },
+    error: (err) => {
+      this.isSaving = false; // Importante: desbloquear si falla
+      this.alert.error('Error al procesar: ' + (err.message || 'Error interno'));
+    },
+    complete: () => (this.isSaving = false) // Siempre desbloqueamos al terminar
+  });
+}
 }

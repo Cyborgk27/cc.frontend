@@ -1,69 +1,95 @@
-<div class="p-8 bg-transparent min-h-screen">
+<div class="p-8 bg-transparent min-h-screen animate-in fade-in slide-in-from-bottom-4 duration-700">
     
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 bg-slate-800/20 p-4 rounded-3xl border border-slate-700/30 backdrop-blur-sm">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 bg-slate-800/20 p-6 rounded-[2.5rem] border border-slate-700/30 backdrop-blur-md shadow-xl">
         
-        <div class="flex bg-slate-900/50 p-1.5 rounded-2xl border border-slate-700/50 w-fit">
-            <button (click)="activeTab.set('roles')"
-                [class]="activeTab() === 'roles' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-200'"
-                class="flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold transition-all duration-300">
-                <span class="material-icons text-sm">admin_panel_settings</span>
-                Roles
-            </button>
-            <button (click)="activeTab.set('features')"
-                [class]="activeTab() === 'features' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-200'"
-                class="flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold transition-all duration-300">
-                <span class="material-icons text-sm">extension</span>
-                Funcionalidades
-            </button>
+        <div class="space-y-4">
+            <div>
+                <h1 class="text-3xl font-black text-white tracking-tight">Seguridad y Accesos</h1>
+                <p class="text-slate-400 text-sm font-medium">Gestión de roles, permisos y funcionalidades del sistema.</p>
+            </div>
+
+            <div class="flex bg-slate-950/50 p-1.5 rounded-2xl border border-slate-700/50 w-fit">
+                <button (click)="activeTab.set('roles')"
+                    [class]="activeTab() === 'roles' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-slate-500 hover:text-slate-300'"
+                    class="flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold transition-all duration-300">
+                    <span class="material-icons text-sm">admin_panel_settings</span>
+                    Roles
+                </button>
+                
+                <button (click)="activeTab.set('features')"
+                    [class]="activeTab() === 'features' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-slate-500 hover:text-slate-300'"
+                    class="flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold transition-all duration-300">
+                    <span class="material-icons text-sm">extension</span>
+                    Funcionalidades
+                </button>
+            </div>
         </div>
 
         <div class="flex items-center">
             @if (auth.hasPermission(PERMS.SECURITY.CREATE)) {
-                
                 @if (activeTab() === 'roles') {
                     <button (click)="goToRoleForm()" 
-                        class="group flex items-center gap-3 bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-3 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20 active:scale-95">
+                        class="group flex items-center gap-3 bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-indigo-600/20 active:scale-95">
                         <span class="material-icons group-hover:rotate-12 transition-transform">add_moderator</span>
                         Nuevo Rol
                     </button>
                 } @else {
                     <button (click)="goToFeatureForm()" 
-                        class="group flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-3 rounded-2xl font-bold transition-all shadow-lg shadow-emerald-900/20 active:scale-95">
+                        class="group flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-emerald-900/20 active:scale-95">
                         <span class="material-icons group-hover:rotate-12 transition-transform">extension</span>
                         Nueva Funcionalidad
                     </button>
                 }
-
             }
         </div>
     </div>
 
-    <div class="animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div class="relative min-h-[400px]">
         
         @if (security.isLoading()) {
-            <div class="flex flex-col items-center justify-center py-20 bg-slate-800/30 rounded-3xl border border-slate-700/50">
-                <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-700 border-t-indigo-500 mb-4"></div>
-                <p class="text-slate-500 font-medium">Sincronizando con el servidor...</p>
+            <div class="flex flex-col items-center justify-center py-32 bg-slate-800/20 rounded-[2rem] border border-slate-700/30 backdrop-blur-md">
+                <div class="relative w-16 h-16">
+                    <div class="absolute inset-0 rounded-full border-4 border-slate-800 border-t-indigo-500 animate-spin"></div>
+                    <div class="absolute inset-2 rounded-full border-4 border-slate-800 border-b-emerald-500 animate-spin-slow"></div>
+                </div>
+                <p class="mt-6 text-slate-500 font-bold uppercase tracking-[0.2em] text-[10px]">Sincronizando Seguridad...</p>
             </div>
         } @else {
             
-            <div class="bg-slate-800/20 rounded-3xl border border-slate-700/30 overflow-hidden backdrop-blur-md">
+            <div class="bg-slate-800/10 rounded-[2rem] border border-slate-700/30 overflow-hidden backdrop-blur-md shadow-2xl transition-all duration-500">
+                
                 @if (activeTab() === 'roles') {
-                    <app-generic-table 
-                        [data]="security.roles()" 
-                        [columns]="roleColumns" 
-                        [actions]="roleActions"
-                        [loading]="security.isLoading()">
-                    </app-generic-table>
-                } @else {
-                    <app-generic-table 
-                        [data]="security.features()" 
-                        [columns]="featureColumns" 
-                        [actions]="featureActions"
-                        [loading]="security.isLoading()">
-                    </app-generic-table>
+                    <div class="animate-in fade-in zoom-in-95 duration-300">
+                        <app-role-table 
+                            [roles]="security.roles()" 
+                            [loading]="security.isLoading()"
+                            (onEdit)="handleEditRole($event)">
+                        </app-role-table>
+                    </div>
+                } 
+
+                @else {
+                    <div class="animate-in fade-in zoom-in-95 duration-300">
+                        <app-feature-table 
+                            [features]="security.features()" 
+                            [loading]="security.isLoading()"
+                            (onEdit)="handleEditFeature($event)"
+                            (onDelete)="handleDeleteFeature($event)">
+                        </app-feature-table>
+                    </div>
                 }
             </div>
         }
+    </div>
+
+    <div class="mt-8 flex items-center gap-4 px-6 py-4 bg-slate-900/40 border border-slate-800 rounded-2xl w-fit">
+        <div class="flex -space-x-2">
+            <div class="w-8 h-8 rounded-full bg-indigo-500/20 border border-indigo-500/50 flex items-center justify-center text-indigo-400">
+                <span class="material-icons text-xs">shield</span>
+            </div>
+        </div>
+        <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">
+            Mostrando {{ activeTab() === 'roles' ? security.roles().length : security.features().length }} registros totales
+        </p>
     </div>
 </div>

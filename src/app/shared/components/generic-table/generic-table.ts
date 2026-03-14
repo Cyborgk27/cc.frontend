@@ -1,7 +1,7 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { AuthState } from '../../../core/services/auth-state';
-import { TableAction } from '../../interfaces/table-action.interface';
 import { TableColumn } from '../../interfaces/table-column.interface';
+import { IGridAction } from '../../interfaces/table-action.interface';
 
 @Component({
   selector: 'app-generic-table',
@@ -14,7 +14,7 @@ export class GenericTable {
 
   @Input() data: any[] = [];
   @Input() columns: TableColumn[] = [];
-  @Input() actions: TableAction[] = [];
+  @Input() actions: IGridAction<any>[] = [];
   @Input() pagination: boolean = false; // Por defecto no paginado
   @Input() loading: boolean = false;
   @Input() currentPage: number = 1;

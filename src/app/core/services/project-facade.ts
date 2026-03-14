@@ -1,7 +1,8 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { ApiProjectsGetRequestParams, ProjectService } from '../api';
-import { finalize, tap } from 'rxjs';
+import { ApiProjectsGetRequestParams, CatalogDto, ProjectService } from '../api';
+import { finalize, Observable, tap } from 'rxjs';
 import { ProjectDto } from './../api/model/projectDto';
+import { IBaseResponse } from './interfaces/base-response.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,7 @@ export class ProjectFacade {
 
   // --- STATE ---
   public projects = signal<ProjectDto[]>([]);
+  private _catalogs = signal<CatalogDto[]>([]);
   public selectedProject = signal<ProjectDto | null>(null);
   public isLoading = signal<boolean>(false);
   public totalRecords = signal<number>(0);
@@ -28,7 +30,7 @@ export class ProjectFacade {
           // Asumiendo que la API devuelve { data: [], total: number } o similar
           if (res.isSuccess) {
             res.data.forEach((element: ProjectDto) => {
-              element.isActive = element.isActive == false? true : false
+              element.isActive = element.isActive == false ? true : false
             });
             this.projects.set(res.data);
             this.totalRecords.set(res.totalCount || res.data.length);
@@ -93,7 +95,7 @@ export class ProjectFacade {
           this.selectedProject();
         }
       }
-    ));
+      ));
   }
 
   /**
@@ -102,4 +104,23 @@ export class ProjectFacade {
   public clearSelection() {
     this.selectedProject.set(null);
   }
+
+  /**
+   * l
+   */
+public getAllCatalogs(): Observable<IBaseResponse<CatalogDto[]>> {
+    this.isLoading.set(true);
+
+    // RETORNAMOS el flujo directamente
+    return this.projectService.apiProjectsCatalogsGet().pipe(
+        // tap nos permite "mirar" los datos y guardarlos sin romper el flujo
+        tap((res) => {
+            if (res.isSuccess) {
+                this._catalogs = res.data;
+            }
+        }),
+        // finalize se ejecuta al terminar (éxito o error) para apagar el loader
+        finalize(() => this.isLoading.set(false))
+    );
+}
 }

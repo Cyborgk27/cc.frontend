@@ -1,10 +1,9 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Alert } from '../../../../core/services/ui/alert';
-import { UserDto } from '../../../../core/api';
 import { UserFacade } from '../../../../core/services/user-facade';
 import { SecurityFacade } from '../../../../core/services/security-facade';
+import { AlertService } from '../../../../core/services/ui/alert';
 
 @Component({
   selector: 'app-user-form',
@@ -15,13 +14,13 @@ export class UserForm implements OnInit {
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private alert = inject(Alert);
+  private alert = inject(AlertService);
   public userFacade = inject(UserFacade);
   public securityFacade = inject(SecurityFacade);
 
   public form!: FormGroup;
   public isEditMode = false;
-  
+
   ngOnInit() {
     this.initForm();
     this.checkRoute();
@@ -60,11 +59,31 @@ export class UserForm implements OnInit {
   }
 
   save() {
-    if (this.form.invalid) return;
-    this.userFacade.save(this.form.value).subscribe(res => {
-      if (res.isSuccess) {
-        this.alert.success('Operación exitosa');
-        this.router.navigate(['/users']);
+    // 1. Feedback visual si el formulario es inválido
+    if (this.form.invalid) {
+      this.form.markAllAsTouched(); // Resalta los campos con error en la UI
+      this.alert.toast('Por favor, completa los campos requeridos', 'warning');
+      return;
+    }
+
+    // 2. Extraer valores y asegurar tipos (evita enviar campos vacíos o nulos si no quieres)
+    const userData = this.form.value;
+
+    // 3. Ejecutar guardado con manejo completo de respuesta
+    this.userFacade.save(userData).subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          this.alert.success('El usuario ha sido guardado correctamente');
+          this.router.navigate(['/users']);
+        } else {
+          // Manejo de errores lógicos del backend (ej: "El correo ya existe")
+          this.alert.error(res.message || 'No se pudo completar la operación');
+        }
+      },
+      error: (err) => {
+        // Manejo de errores de conexión o errores 500
+        this.alert.error('Error de conexión con el servidor');
+        console.error('Save Error:', err);
       }
     });
   }

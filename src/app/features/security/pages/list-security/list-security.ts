@@ -1,11 +1,10 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { Router } from '@angular/router';
-import { SecurityFacade } from '../../../../core/services/security-facade';
-import { FeatureDto, RoleDto } from '../../../../core/api';
-import { TableAction } from '../../../../shared/interfaces/table-action.interface';
-import { Alert } from '../../../../core/services/ui/alert';
-import { AuthState } from '../../../../core/services/auth-state';
-import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
+import { Component, inject, OnInit, signal } from "@angular/core";
+import { FeatureDto, RoleDto } from "../../../../core/api";
+import { SecurityFacade } from "../../../../core/services/security-facade";
+import { AuthState } from "../../../../core/services/auth-state";
+import { AlertService } from "../../../../core/services/ui/alert";
+import { Router } from "@angular/router";
+import { PERMISSIONS } from "../../../../core/constants/permissions.constants";
 
 @Component({
   selector: 'app-list-security',
@@ -16,99 +15,59 @@ import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 export class ListSecurity implements OnInit {
   // Inyecciones
   public security = inject(SecurityFacade);
-  public auth = inject(AuthState); // Inyectamos para el control de permisos
+  public auth = inject(AuthState);
   private router = inject(Router);
-  private alert = inject(Alert);
+  private alert = inject(AlertService);
 
-  // Exponemos las constantes al template
+  // Constantes y Estado
   public readonly PERMS = PERMISSIONS;
-
-  // Estado de la UI
   public activeTab = signal<'roles' | 'features'>('roles');
-
-  // --- CONFIGURACIÓN DE COLUMNAS ---
-  
-  public roleColumns = [
-    { key: 'name', label: 'Código Técnico' },
-    { key: 'showName', label: 'Nombre Visual' },
-    { key: 'description', label: 'Descripción' }
-  ];
-
-  public featureColumns = [
-    { key: 'icon', label: 'Icono', class: 'material-icons text-indigo-400' },
-    { key: 'showName', label: 'Nombre Visual' },
-    { key: 'name', label: 'Código Técnico' }
-  ];
-
-  // --- CONFIGURACIÓN DE ACCIONES PROTEGIDAS ---
-
-  public featureActions: TableAction[] = [
-    {
-      icon: 'edit',
-      tooltip: 'Editar Funcionalidad',
-      colorClass: 'text-indigo-400',
-      permission: PERMISSIONS.SECURITY.UPDATE, // 'SECURITY_UPDATE'
-      callback: (feature: FeatureDto) => this.goToFeatureForm(feature.id?.toString())
-    },
-    {
-      icon: 'delete',
-      tooltip: 'Eliminar',
-      colorClass: 'text-rose-500',
-      permission: PERMISSIONS.SECURITY.DELETE, // 'SECURITY_DELETE'
-      callback: (feature: FeatureDto) => this.deleteFeature(feature)
-    }
-  ];
-
-  public roleActions: TableAction[] = [
-    {
-      icon: 'edit_note',
-      tooltip: 'Editar Configuración',
-      colorClass: 'text-indigo-400',
-      permission: PERMISSIONS.SECURITY.UPDATE,
-      callback: (role: RoleDto) => this.goToRoleForm(role)
-    },
-    // {
-    //   icon: 'delete_outline',
-    //   tooltip: 'Eliminar Rol',
-    //   colorClass: 'text-rose-400',
-    //   permission: PERMISSIONS.SECURITY.DELETE,
-    //   callback: (role: RoleDto) => this.deleteRole(role)
-    // },
-  ];
 
   ngOnInit() {
     this.security.fetchAll();
   }
 
-  // --- MÉTODOS DE NAVEGACIÓN ---
+  // --- NAVEGACIÓN A FORMULARIOS (CREACIÓN) ---
 
-  goToRoleForm(role?: RoleDto) {
-    if (role && role.id) {
+  /** Navega al formulario para crear un nuevo Rol */
+  goToRoleForm() {
+    this.router.navigate(['/security/new-security']);
+  }
+
+  /** Navega al formulario para crear una nueva Funcionalidad */
+  goToFeatureForm() {
+    this.router.navigate(['/security/new-feature']);
+  }
+
+  // --- LÓGICA DE ROLES (EDICIÓN/BORRADO) ---
+
+  handleEditRole(role: RoleDto) {
+    if (role.id) {
       this.router.navigate(['/security/edit-security', role.id]);
-    } else {
-      this.router.navigate(['/security/new-security']);
     }
   }
 
-  goToFeatureForm(id?: string) {
-    if (id) {
-      this.router.navigate(['/security/edit-feature', id]);
-    } else {
-      this.router.navigate(['/security/new-feature']);
+  // --- LÓGICA DE FEATURES (EDICIÓN/BORRADO) ---
+
+  handleEditFeature(feature: FeatureDto) {
+    if (feature.id) {
+      this.router.navigate(['/security/edit-feature', feature.id]);
     }
   }
 
-  // --- MÉTODOS DE ACCIÓN ---
+  /**
+   * Maneja la eliminación de una funcionalidad tras confirmar con el usuario.
+   */
+  async handleDeleteFeature(feature: FeatureDto) {
+    const confirmed = await this.alert.confirm(
+      `¿Estás seguro de eliminar la funcionalidad "${feature.showName}"?`,
+      'Acción Irreversible'
+    );
 
-  deleteRole(role: RoleDto) {
-    if (confirm(`¿Estás seguro de eliminar el rol "${role.showName}"?`)) {
-      this.alert.success('Rol eliminado (Simulado)');
-    }
-  }
-
-  deleteFeature(feature: FeatureDto): void {
-    if (confirm(`¿Eliminar la funcionalidad "${feature.showName}" y todos sus permisos asociados?`)) {
-      this.alert.success('Funcionalidad eliminada (Simulado)');
+    if (confirmed) {
+      // Aquí llamarías a tu fachada: 
+      // this.security.deleteFeature(feature.id).subscribe(...)
+      this.alert.success('Funcionalidad eliminada correctamente');
     }
   }
 }

@@ -1,12 +1,12 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CatalogFacade } from '../../../../core/services/catalog-facade';
-import { ApiCatalogsGetRequestParams } from '../../../../core/api';
+import { ApiCatalogsGetRequestParams, CatalogDto } from '../../../../core/api';
 import { TableColumn } from '../../../../shared/interfaces/table-column.interface';
-import { TableAction } from '../../../../shared/interfaces/table-action.interface';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 import { AuthState } from '../../../../core/services/auth-state';
-import { Alert } from '../../../../core/services/ui/alert';
+import { AlertService } from '../../../../core/services/ui/alert';
+import { IGridAction } from '../../../../shared/interfaces/table-action.interface';
 
 @Component({
   selector: 'app-list-catalog',
@@ -18,7 +18,7 @@ export class ListCatalog implements OnInit {
   private router = inject(Router);
   public catalogFacade = inject(CatalogFacade);
   public auth = inject(AuthState); // Servicio de permisos
-  private alert = inject(Alert);
+  private alert = inject(AlertService);
 
   // Exponemos las constantes para usarlas en el HTML
   public readonly PERMS = PERMISSIONS;
@@ -39,26 +39,26 @@ export class ListCatalog implements OnInit {
       class: 'text-slate-500'
     },
     {
-      key: 'isDeleted',
+      key: 'isActive',
       label: 'Estado',
       type: 'boolean'
-    }
+    },
   ];
 
-  public actions: TableAction[] = [
+  public actions: IGridAction<CatalogDto>[] = [
     {
       icon: 'edit',
-      tooltip: 'Editar Catálogo',
+      label: 'Editar Catálogo',
       colorClass: 'text-indigo-400',
       permission: PERMISSIONS.CATALOGS.UPDATE, // 'CATALOGS_UPDATE'
-      callback: (row: any) => this.goToEditCatalog(row)
+      callback: (row: CatalogDto) => this.goToEditCatalog(row)
     },
     {
       icon: 'delete',
-      tooltip: 'Eliminar',
+      label: 'Eliminar',
       colorClass: 'text-rose-500',
       permission: PERMISSIONS.CATALOGS.DELETE, // 'CATALOGS_DELETE'
-      callback: (row: any) => this.deleteCatalog(row)
+      callback: (row: CatalogDto) => this.deleteCatalog(row)
     }
   ];
 
@@ -86,19 +86,27 @@ export class ListCatalog implements OnInit {
     this.loadData();
   }
 
-  deleteCatalog(row: any) {
-    this.alert.confirm('¿Estás seguro de que deseas inactivar este catálogo?').then(confirmed => {
-      if (confirmed && row.isDeleted === false) {
-        this.catalogFacade.delete(row.id).subscribe({
-          next: () => {
-            this.alert.success('Catálogo inactivado correctamente.');
-          },
-          error: () => {
-            this.alert.error('Error al inactivar el catálogo. Inténtalo de nuevo.');
-          }
-        });
-      }
-    });
+  async deleteCatalog(row: CatalogDto) {
+    const isDeleted = row.isDeleted === true;
+
+    if (isDeleted) {
+      this.alert.error(`El catálogo "${row.name} - ${row.showName}" esta inactivo.`);
+      return;
+    }
+
+    const confirmed = await this.alert.confirm('¿Estás seguro de que deseas eliminar este catálogo?');
+
+    if (confirmed && row.id != null && typeof row.id === 'number') {
+      this.catalogFacade.delete(row.id).subscribe({
+        next: () => {
+          this.alert.success('Catálogo eliminado correctamente.');
+          this.loadData();
+        },
+        error: () => {
+          this.alert.error('Error al eliminar el catálogo. Inténtalo de nuevo.');
+        }
+      });
+    }
   }
 
   // Método auxiliar para navegación si lo necesitas fuera de la tabla
@@ -106,8 +114,8 @@ export class ListCatalog implements OnInit {
     this.router.navigate(['/catalogs/new-catalog']);
   }
 
-  goToEditCatalog(catalog: any) {
-    if(catalog.isDeleted === false) {
+  goToEditCatalog(catalog: CatalogDto) {
+    if(catalog.isDeleted === false && catalog.id != null && typeof catalog.id === 'number') {
       this.router.navigate(['/catalogs/edit-catalog', catalog.id]);
     }else{
       this.alert.error('El catalogo se encuentra eliminado');

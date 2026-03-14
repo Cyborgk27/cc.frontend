@@ -26,7 +26,7 @@ export class Navbar {
   public userRole = this.authState.userRole;
   
   // Tipamos la señal de navegación como un arreglo de NavItem
-  private menu = this.authState.navigation as () => NavItem[];
+  private menu = this.authState.session()?.navigation || [];
 
   private currentUrl = toSignal(
     this.router.events.pipe(
@@ -42,7 +42,7 @@ export class Navbar {
     if (url.includes('dashboard')) return 'Panel de Control';
 
     // Ahora 'item' está tipado correctamente como NavItem
-    const activeItem = this.menu()
+    const activeItem = this.menu
       .filter((item: NavItem) => item.path !== '/')
       .find((item: NavItem) => url.startsWith(item.path));
     

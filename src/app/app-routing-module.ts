@@ -59,6 +59,15 @@ const routes: Routes = [
         canActivate: [authGuard],
       },
       {
+        path: 'logs',
+        loadChildren: () => import('./features/system/system-module').then(m => m.SystemModule),
+        data: {
+          permission: 'LOG_READ',
+          breadcrumb: 'Auditoría'
+        },
+        canActivate: [authGuard],
+      },
+      {
         path: '403',
         component: ErrorPage,
         data: {

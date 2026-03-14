@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CatalogDto } from '../../../../core/api';
-import { TableColumn } from '../../../../shared/interfaces/table-column.interface';
-import { TableAction } from '../../../../shared/interfaces/table-action.interface';
 import { PERMISSIONS } from '../../../../core/constants/permissions.constants';
 import { CatalogFacade } from '../../../../core/services/catalog-facade';
-import { Alert } from '../../../../core/services/ui/alert';
+import { AlertService } from '../../../../core/services/ui/alert';
+import { IGridAction } from '../../../../shared/interfaces/table-action.interface';
+import { TableColumn } from '../../../../shared/interfaces/table-column.interface';
 
 @Component({
   selector: 'app-catalog-form',
@@ -16,7 +16,7 @@ import { Alert } from '../../../../core/services/ui/alert';
 export class CatalogForm implements OnInit {
   private fb = inject(FormBuilder);
   private catalogFacade = inject(CatalogFacade);
-  private alert = inject(Alert);
+  private alert = inject(AlertService);
 
   @Input() initialData?: CatalogDto;
   @Input() parentCatalogs: CatalogDto[] = [];
@@ -35,13 +35,13 @@ export class CatalogForm implements OnInit {
     { key: 'isActive', label: 'Estado' }
   ];
 
-  public actions: TableAction[] = [
+  public actions: IGridAction<CatalogDto>[] = [
     {
       icon: 'delete',
-      tooltip: 'Eliminar',
+      label: 'Eliminar',
       colorClass: 'text-rose-500',
       permission: PERMISSIONS.CATALOGS.DELETE, // 'CATALOGS_DELETE'
-      callback: (row: any) => this.deleteChild(row)
+      callback: (row: CatalogDto) => this.deleteChild(row)
     }
   ]
 
@@ -64,22 +64,41 @@ export class CatalogForm implements OnInit {
     }
     this.initChildForm();
 
-    if(this.isEdit==true) {
+    if (this.isEdit == true) {
       this.form.get('name')?.disable(); // Bloqueamos el parentId en modo edición
       this.form.get('isParent')?.disable(); // Bloqueamos isParent en modo edición
     }
   }
 
-  deleteChild(row: any): void {
-    if(row.isActive) {
-      this.alert.confirm('¿Deseas inactivar este catálogo hijo? Esta acción no se puede deshacer.').then(confirmed => {
-        if (confirmed) {
-          this.catalogFacade.delete(row.id).subscribe(() => {
-            window.location.reload();
-          });
-        }
-      });
+  async deleteChild(row: CatalogDto): Promise<void> {
+    // 1. Guard Clauses: Validaciones rápidas al inicio
+    const isValidId = row.id != null && typeof row.id === 'number';
+
+    if (!row.isActive || !isValidId) {
+      this.alert.toast('Este catálogo ya se encuentra inactivo', 'info');
+      return;
     }
+
+    // 2. Confirmación con nuestra alerta personalizada
+    const confirmed = await this.alert.confirm(
+      '¿Deseas inactivar este catálogo hijo? Esta acción no se puede deshacer.',
+      'Confirmar Inactivación'
+    );
+
+    if (!confirmed) return;
+
+    // 3. Ejecución y actualización de datos sin recargar la página
+    this.catalogFacade.delete(row.id!).subscribe({
+      next: () => {
+        this.alert.success('Catálogo inactivado correctamente');
+
+        window.location.reload(); // Recarga para reflejar cambios en la lista de hijos
+      },
+      error: (err) => {
+        this.alert.error('No se pudo inactivar el catálogo hijo');
+        console.error('Delete Child Error:', err);
+      }
+    });
   }
 
   private initChildForm() {

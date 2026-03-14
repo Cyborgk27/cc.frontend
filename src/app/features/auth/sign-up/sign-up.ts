@@ -1,9 +1,8 @@
 import { Component, inject, OnInit, effect, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService, ApiAuthRegisterPostRequestParams, RoleDto } from '../../../../core/api';
-import { Alert } from '../../../../core/services/ui/alert';
-import { SecurityFacade } from '../../../../core/services/security-facade';
+import { ApiAuthRegisterPostRequestParams, AuthService } from '../../../core/api';
+import { AlertService } from '../../../core/services/ui/alert';
 
 @Component({
   selector: 'app-sign-up',
@@ -14,7 +13,7 @@ export class SignUp implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private authService = inject(AuthService);
-  private alert = inject(Alert);
+  private alert = inject(AlertService);
 
   public signUpForm: FormGroup;
   public isLoading: boolean = false;
