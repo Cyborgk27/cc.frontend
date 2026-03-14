@@ -7,8 +7,8 @@ import { ApiModule, Configuration } from './core/api';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { SharedModule } from './shared/shared-module';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
-import { environment } from '../environments/environment.development';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
